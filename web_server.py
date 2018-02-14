@@ -1,4 +1,4 @@
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
 class webserverHandler(BaseHTTPRequestHandler):
@@ -11,7 +11,7 @@ class webserverHandler(BaseHTTPRequestHandler):
 
                 output = ""
                 output += "<html><body>Hello!</body></html>"
-                self.wfile.write(output)
+                self.wfile.write(bytes(output.encode()))
                 print(output)
                 return
 
@@ -23,8 +23,8 @@ def main():
     try:
         port = 8080
         server = HTTPServer(('', port), webserverHandler)
-        server.serve_forever()
         print("Web server running on port %s" % port)
+        server.serve_forever()
 
     except KeyboardInterrupt:
         # A python defined exception when the user
