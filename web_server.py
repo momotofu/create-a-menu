@@ -10,11 +10,31 @@ class webserverHandler(BaseHTTPRequestHandler):
                 self.end_headers()
 
                 output = ""
-                output += "<html><body>Hello!</body></html>"
+                output += """
+                    <html>
+                        <body>hello!</body>
+                        <a href="/main">Go to the main page</a>
+                    </html>
+                    """
                 self.wfile.write(bytes(output.encode()))
                 print(output)
                 return
 
+            if self.path.endswith("/main"):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                output = ""
+                output += """
+                    <html>
+                        <body>The main page!</body>
+                        <a href="/hello">Go to hello page</a>
+                    </html>
+                    """
+                self.wfile.write(bytes(output.encode()))
+                print(output)
+                return
         except IOError:
             self.send_error(404, "File not found %s" % self.path)
 
