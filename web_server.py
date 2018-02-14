@@ -1,4 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import parse_qs
 
 
 class webserverHandler(BaseHTTPRequestHandler):
@@ -35,9 +36,57 @@ class webserverHandler(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(output.encode()))
                 print(output)
                 return
+
+            if self.path.endswith("/"):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                output = ""
+                output += "<html><body>"
+                output += """<form method='POST'
+                action='/'><h2>What would you like me to say?</h2><input
+                name='message'><input type='submit'
+                value='Submit'></form>"""
+
+                output += "</body></html>"
+
+                self.wfile.write(bytes(output.encode()))
+                print(output)
+                return
+
         except IOError:
             self.send_error(404, "File not found %s" % self.path)
 
+
+    def do_POST(self):
+        try:
+            self.send_response(301)
+            self.send_header('content-type', 'text/html')
+            self.end_headers()
+
+            length = int(self.headers.get('Content-length', 0))
+            body = self.rfile.read(length).decode()
+            params = parse_qs(body)
+            message_content = params["message"][0]
+
+            output = ""
+            output += "<html><body>"
+            output += "<h2> Okay, how about this: </h2>"
+            output += "<h1> %s </h1>" % message_content
+
+            output += """<form method='POST'
+            action='/'><h2>What would you like me to say?</h2><input
+            name='message'><input type='submit'
+            value='Submit'></form>"""
+
+            output += "</body></html>"
+            self.wfile.write(bytes(output.encode()))
+            print(output)
+            return
+
+        except IOError:
+            pass
 
 def main():
     try:
