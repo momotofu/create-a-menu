@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Restaurant, Base, MenuItem
+import query_db
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
