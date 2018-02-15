@@ -15,38 +15,6 @@ session = DBSession()
 class webserverHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            if self.path.endswith("/hello"):
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-
-                output = ""
-                output += """
-                    <html>
-                        <body>hello!</body>
-                        <a href="/main">Go to the main page</a>
-                    </html>
-                    """
-                self.wfile.write(bytes(output.encode()))
-                print(output)
-                return
-
-            if self.path.endswith("/main"):
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-
-                output = ""
-                output += """
-                    <html>
-                        <body>The main page!</body>
-                        <a href="/hello">Go to hello page</a>
-                    </html>
-                    """
-                self.wfile.write(bytes(output.encode()))
-                print(output)
-                return
-
             if self.path.endswith("/"):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
@@ -64,6 +32,14 @@ class webserverHandler(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(output.encode()))
                 print(output)
                 return
+
+        if self.path.endswith('restaurants'):
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+
+           restaurants = query_db.get_all(session, Restaurant)
+
 
         except IOError:
             self.send_error(404, "File not found %s" % self.path)
