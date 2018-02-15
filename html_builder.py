@@ -1,9 +1,9 @@
-class HTML_Builder(self):
+class HTML_Builder():
     """
     A class to simplify building an html string.
     """
 
-    __init__(self):
+    def __init__(self):
         self.output = "<html><body>"
 
     def add_html(self, html):

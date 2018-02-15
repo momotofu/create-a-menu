@@ -34,30 +34,30 @@ class webserverHandler(BaseHTTPRequestHandler):
                 print(output)
                 return
 
-        if self.path.endswith('restaurants'):
-            self.send_response(200)
-            self.send_header('Content-type', 'text/html')
-            self.end_headers()
+            if self.path.endswith('restaurants'):
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
 
-            restaurants = query_db.get_all(session, Restaurant)
+                restaurants = query_db.get_all(session, Restaurant)
 
-            # start an output object
-            output = HB()
+                # start an output object
+                output = HB()
 
-            # populate output with restaurant names
-            for restaurant in restaurants:
-                output.add_html("""
-                    <h3> %s </h3>
-                    <div>
-                        <a href='/edit'>edit</a>
-                        <a href='/delete'>delete</a>
-                    </div>
-                    """ % restaurant.name
-                    )
+                # populate output with restaurant names
+                for restaurant in restaurants:
+                    output.add_html("""
+                        <h3> %s </h3>
+                        <div>
+                            <a href='/edit'>edit</a>
+                            <a href='/delete'>delete</a>
+                        </div>
+                        """ % restaurant.name
+                        )
 
-            # send response to client
-            self.wfile.write(output.get_html().encode())
-            return
+                # send response to client
+                self.wfile.write(output.get_html().encode())
+                return
 
 
         except IOError:
