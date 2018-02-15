@@ -45,6 +45,14 @@ class webserverHandler(BaseHTTPRequestHandler):
                 # start an output object
                 output = HB()
 
+                # add link to create a new restaurant
+                output.add_html("""
+                    <nav>
+                        <a href='/restaurants/new'>Add a new restaurant</a>
+                    </nav>
+                    """
+                    )
+
                 # populate output with restaurant names
                 for restaurant in restaurants:
                     output.add_html("""
@@ -68,6 +76,14 @@ class webserverHandler(BaseHTTPRequestHandler):
                 # start an output object
                 output = HB()
 
+                # add link to create a new restaurant
+                output.add_html("""
+                    <nav>
+                        <a href='/restaurants'>back to restaurants</a>
+                    </nav>
+                    """
+                    )
+
                 # populate output with submission form
                 output.add_html("""
                     <h1> Create a new restaurant </h1>
@@ -90,30 +106,51 @@ class webserverHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            if self.path.endswith('/restaurants/new'):
+                self.send_response(303)
+                self.send_header('content-type', 'text/html')
+                self.end_headers()
+                length = int(self.headers.get('content-length', 0))
+                body = self.rfile.read(length).decode()
+                params = parse_qs(body)
 
-            self.send_response(301)
-            self.send_header('content-type', 'text/html')
-            self.end_headers()
+                if 'name' in params:
+                    name = params['name'][0]
+                else:
+                    self.send_header('Location', '/restaurants/news')
+                    self.end_headers()
+                    return
 
-            length = int(self.headers.get('Content-length', 0))
-            body = self.rfile.read(length).decode()
-            params = parse_qs(body)
-            message_content = params["message"][0]
+                output = HB()
 
-            output = ""
-            output += "<html><body>"
-            output += "<h2> Okay, how about this: </h2>"
-            output += "<h1> %s </h1>" % message_content
+                try:
+                    new_restaurant = Restaurant(name=name)
+                    session.add(new_restaurant)
+                    session.commit()
 
-            output += """<form method='POST'
-            action='/'><h2>What would you like me to say?</h2><input
-            name='message'><input type='submit'
-            value='Submit'></form>"""
+                    # populate output with success message
+                    output.add_html("""
+                        <h1> Successfully created % s </h1>
+                        <a href='/restaurants'>Back to restaurants</a>
+                        """ % new_restaurant.name
+                        )
 
-            output += "</body></html>"
-            self.wfile.write(bytes(output.encode()))
-            print(output)
-            return
+                    # send response to client
+                    self.wfile.write(output.get_html().encode())
+                    return
+
+                except:
+                    session.rollback()
+
+                    output.add_html("""
+                        <h1>Failed to create new restaurant</h1>
+                        <a href='/restaurants/new'>Try again</a>
+                        """
+                        )
+
+                    # send response to client
+                    self.wfile.write(output.get_html().encode())
+                    return
 
         except IOError:
             pass
