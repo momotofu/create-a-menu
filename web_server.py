@@ -41,10 +41,23 @@ class webserverHandler(BaseHTTPRequestHandler):
 
             restaurants = query_db.get_all(session, Restaurant)
 
-            output = ''
+            # start an output object
+            output = HB()
 
             # populate output with restaurant names
             for restaurant in restaurants:
+                output.add_html("""
+                    <h3> %s </h3>
+                    <div>
+                        <a href='/edit'>edit</a>
+                        <a href='/delete'>delete</a>
+                    </div>
+                    """ % restaurant.name
+                    )
+
+            # send response to client
+            self.wfile.write(output.get_html().encode())
+            return
 
 
         except IOError:
