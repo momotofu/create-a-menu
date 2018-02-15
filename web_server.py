@@ -35,6 +35,7 @@ class webserverHandler(BaseHTTPRequestHandler):
                 return
 
             if self.path.endswith('restaurants'):
+                # send the client a response
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
@@ -59,6 +60,29 @@ class webserverHandler(BaseHTTPRequestHandler):
                 self.wfile.write(output.get_html().encode())
                 return
 
+            if self.path.endswith('/restaurants/new'):
+                self.send_response(200)
+                self.send_header('content-type', 'text/html')
+                self.end_headers()
+
+                # start an output object
+                output = HB()
+
+                # populate output with submission form
+                output.add_html("""
+                    <h1> Create a new restaurant </h1>
+                    <form method='POST' action='/restaurants/new'>
+                        <label>
+                            <input name='name' type='text'>
+                        </label>
+                        <input type='submit' value='SUBMIT'>
+                    </form>
+                    """
+                    )
+
+                # send response to client
+                self.wfile.write(output.get_html().encode())
+                return
 
         except IOError:
             self.send_error(404, "File not found %s" % self.path)
@@ -66,6 +90,7 @@ class webserverHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+
             self.send_response(301)
             self.send_header('content-type', 'text/html')
             self.end_headers()
