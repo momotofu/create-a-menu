@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Restaurant, Base, MenuItem
 import query_db
+from html_builder import HTML_Builder as HB
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs
@@ -38,7 +39,12 @@ class webserverHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
 
-           restaurants = query_db.get_all(session, Restaurant)
+            restaurants = query_db.get_all(session, Restaurant)
+
+            output = ''
+
+            # populate output with restaurant names
+            for restaurant in restaurants:
 
 
         except IOError:
