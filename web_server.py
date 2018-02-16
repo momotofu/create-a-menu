@@ -143,7 +143,7 @@ class webserverHandler(BaseHTTPRequestHandler):
         try:
             if self.path.endswith('/edit'):
                 # send the client a response
-                self.send_response(200)
+                self.send_response(303)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
 
