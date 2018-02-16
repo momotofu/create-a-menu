@@ -80,7 +80,6 @@ class webserverHandler(BaseHTTPRequestHandler):
                     Restaurant,
                     test
                     )
-                print('test: ', restaurant)
 
                 # start an output object
                 output = HB()
@@ -142,6 +141,41 @@ class webserverHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            if self.path.endswith('/edit'):
+                # send the client a response
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                test = int(self.path.replace('/edit', '')[1:])
+                restaurant = query_db.get_one_restaurant(
+                    session,
+                    Restaurant,
+                    test
+                    )
+
+                # start an output object
+                output = HB()
+
+                # add link to create a new restaurant
+                output.add_html("""
+                    <nav>
+                        <a href='/restaurants'>go to restaurants</a>
+                    </nav>
+                    <h1> edit the name of your restaurant </h1>
+                    <form method='POST'>
+                        <label> Restaurant name:
+                            <input name='name' placeholder='%s'>
+                        </label>
+                        <input type='submit' value='SUBMIT'>
+                    </form>
+                    """ % restaurant.name
+                    )
+
+                # send response to client
+                self.wfile.write(output.get_html().encode())
+                return
+
             if self.path.endswith('/restaurants/new'):
                 self.send_response(303)
                 self.send_header('content-type', 'text/html')
