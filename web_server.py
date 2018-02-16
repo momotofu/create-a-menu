@@ -148,7 +148,7 @@ class webserverHandler(BaseHTTPRequestHandler):
                 self.end_headers()
 
                 test = int(self.path.replace('/edit', '')[1:])
-                restaurant = query_db.get_one_restaurant(
+                restaurant = query_db.get_one(
                     session,
                     Restaurant,
                     test
