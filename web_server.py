@@ -144,37 +144,56 @@ class webserverHandler(BaseHTTPRequestHandler):
             if self.path.endswith('/edit'):
                 # send the client a response
                 self.send_response(303)
-                self.send_header('Content-type', 'text/html')
+                self.send_header('content-type', 'text/html')
                 self.end_headers()
 
-                test = int(self.path.replace('/edit', '')[1:])
+                # get parameters
+                length = int(self.headers.get('content-length', 0))
+                body = self.rfile.read(length).decode()
+                params = parse_qs(body)
+
+                uid = int(self.path.replace('/edit', '')[1:])
+
+                if 'name' in params:
+                    name = params['name'][0]
+                else:
+                    self.send_header('Location', '/%s/edit' % uid)
+                    self.end_headers()
+                    return
+
                 restaurant = query_db.get_one(
                     session,
                     Restaurant,
-                    test
+                    uid
                     )
+                restaurant.name = name
 
-                # start an output object
-                output = HB()
+                try:
+                    query_db.update(session, restaurant)
+                    session.commit()
 
-                # add link to create a new restaurant
-                output.add_html("""
-                    <nav>
-                        <a href='/restaurants'>go to restaurants</a>
-                    </nav>
-                    <h1> edit the name of your restaurant </h1>
-                    <form method='POST'>
-                        <label> Restaurant name:
-                            <input name='name' placeholder='%s'>
-                        </label>
-                        <input type='submit' value='SUBMIT'>
-                    </form>
-                    """ % restaurant.name
-                    )
+                    # start an output object
+                    output = HB()
 
-                # send response to client
-                self.wfile.write(output.get_html().encode())
-                return
+                    # add link to create a new restaurant
+                    output.add_html("""
+                        <nav>
+                            <a href='/restaurants'>go to restaurants</a>
+                        </nav>
+                        <h1>Successfuly edited % s</h1>
+                        """ % restaurant.name
+                        )
+
+                    # send response to client
+                    self.wfile.write(output.get_html().encode())
+                    return
+                except:
+                    session.rollback()
+                    self.send_response(500)
+                    self.send_header('content-type', 'text/html')
+                    self.end_headers()
+                    raise
+                    return
 
             if self.path.endswith('/restaurants/new'):
                 self.send_response(303)

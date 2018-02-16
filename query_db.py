@@ -6,3 +6,6 @@ def get_one(session, object, o_id):
 
 def delete(session, object):
     session.delete(object)
+
+def update(session, object):
+    session.add(object)
