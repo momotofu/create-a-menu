@@ -58,10 +58,10 @@ class webserverHandler(BaseHTTPRequestHandler):
                     output.add_html("""
                         <h3> %s </h3>
                         <div>
-                            <a href='/edit'>edit</a>
+                            <a href='/%s/edit'>edit</a>
                             <a href='/delete'>delete</a>
                         </div>
-                        """ % restaurant.name
+                        """ % (restaurant.name, restaurant.id)
                         )
 
                 # send response to client
