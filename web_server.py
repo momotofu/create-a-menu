@@ -59,10 +59,43 @@ class webserverHandler(BaseHTTPRequestHandler):
                         <h3> %s </h3>
                         <div>
                             <a href='/%s/edit'>edit</a>
-                            <a href='/delete'>delete</a>
+                            <a href='/%s/delete'>delete</a>
                         </div>
-                        """ % (restaurant.name, restaurant.id)
+                        """ % (restaurant.name, restaurant.id, restaurant.id)
                         )
+
+                # send response to client
+                self.wfile.write(output.get_html().encode())
+                return
+
+            if self.path.endswith('/delete'):
+                # send the client a response
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                test = int(self.path.replace('/delete', '')[1:])
+                restaurant = query_db.get_one(
+                    session,
+                    Restaurant,
+                    test
+                    )
+
+                # start an output object
+                output = HB()
+
+                # add link to create a new restaurant
+                output.add_html("""
+                    <nav>
+                        <a href='/restaurants'>go to restaurants</a>
+                    </nav>
+                    <h1>Are you sure you want to delete %s </h1>
+                    <form method='POST'>
+                        <input type='submit' name="should_delete" value='Yes'>
+                        <input type='submit' name="should_delete" value='No'>
+                    </form>
+                    """ % restaurant.name
+                    )
 
                 # send response to client
                 self.wfile.write(output.get_html().encode())
@@ -141,6 +174,63 @@ class webserverHandler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            if self.path.endswith('/delete'):
+                # send the client a response
+                self.send_response(303)
+                self.send_header('content-type', 'text/html')
+
+                # get parameters
+                length = int(self.headers.get('content-length', 0))
+                body = self.rfile.read(length).decode()
+                params = parse_qs(body)
+
+                if 'should_delete' in params:
+                    should_delete = params['should_delete'][0].lower()
+                else:
+                    self.send_header('Location', '/%s/delete' % uid)
+                    self.end_headers()
+                    return
+
+                if should_delete == 'yes':
+                    try:
+                        uid = int(self.path.replace('/delete', '')[1:])
+                        restaurant = query_db.get_one(
+                            session,
+                            Restaurant,
+                            uid
+                            )
+                        query_db.delete(session, restaurant)
+                        session.commit()
+
+                        self.end_headers()
+
+                        # start output
+                        output = HB()
+                        output.add_html("""
+                            <nav>
+                                <a href="/restaurants">Back to restaurants</a>
+                            </nav>
+                            <h1> %s was successfuly deleted </h1>
+                            """ % restaurant.name
+                            )
+
+                        # send a response to the client
+                        self.wfile.write(output.get_html().encode())
+                        return
+
+                    except:
+                        session.rollback()
+                        self.send_response(500)
+                        self.send_header('content-type', 'text/html')
+                        self.end_headers()
+                        raise
+                        return
+
+                else:
+                    self.send_header('location', '/restaurants')
+                    self.end_headers()
+                    return
+
             if self.path.endswith('/edit'):
                 # send the client a response
                 self.send_response(303)
@@ -187,6 +277,7 @@ class webserverHandler(BaseHTTPRequestHandler):
                     # send response to client
                     self.wfile.write(output.get_html().encode())
                     return
+
                 except:
                     session.rollback()
                     self.send_response(500)
