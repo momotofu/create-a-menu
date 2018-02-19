@@ -125,46 +125,47 @@ def editMenuItem(restaurant_id, menu_id):
             <h1> Edit %s for %s </h1>
             <form method='POST' action='%s'>
                 <label>Name:
-                    <input name='name' placeholder='%s'>
+                    <input name='name' value='%s'>
                 </label>
                 <br />
                 <label>Price:
-                    <input name='price' placeholder='%s'>
+                    <input name='price' value='%s'>
                 </label>
                 <br />
                 <label>Description:
-                    <input name='description' placeholder='%s'>
+                    <input name='description' value='%s'>
                 </label>
                 <br />
                 <label>Course:
-                    <input name='course' placeholder='%s'>
+                    <input name='course' value='%s'>
                 </label>
                 <br />
-                <input type='submit' value='CREATE'>
+                <input type='submit' value='SUBMIT'>
             </form>
-            """ % (menuItem.name, restaurant.name, request.path, menuItem.name,
-                menuItem.price, menuItem.description, menuItem.course)
-            )
+            """ % (menuItem.name, restaurant.name, request.path, menuItem.name, menuItem.price, menuItem.description, menuItem.course))
         return output.get_html()
 
     if request.method == 'POST':
         params = request.form
         try:
-            item = MenuItem(
-                    name=params['name'],
-                    price=params['price'],
-                    course=params['course'],
-                    description=params['description'],
-                    restaurant=restaurant
-                    )
-            session.add(item)
+            if menuItem.name != params['name']:
+                menuItem.name = params['name']
+            if menuItem.price != params['price']:
+                menuItem.price = params['price']
+            if menuItem.description != params['description']:
+                menuItem.description = params['description']
+            if menuItem.course != params['course']:
+                menuItem.course = params['course']
+
+            session.add(menuItem)
             session.commit()
 
             output = HB()
             output.add_html("""
-                <h1>Successfuly create %s </h1>
+                <h1>Successfuly edited %s </h1>
                 <a href="%s">Back to %s</a>
-                """ % (params['name'], request.path, restaurant.name)
+                """ % (params['name'], ('/').join(request.path.split('/')[:3])
+                    + '/', restaurant.name)
                 )
             return output.get_html()
 
