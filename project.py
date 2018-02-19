@@ -39,7 +39,8 @@ def restaurantMenu(restaurant_id):
             <a href=%sedit>edit</a>
             <a href=%sdelete>delete</a>
             </br>
-        """ % (item.name, item.price, item.description, request.path,
+        """ % (item.name, item.price, item.description, request.path +
+            str(item.id) + '/',
             request.path)
         )
 
@@ -111,8 +112,73 @@ def newMenuItem(restaurant_id):
             return output.get_html()
 
 # Task 2: Create route for editMenuItem function here
+@app.route(
+    '/restaurants/<int:restaurant_id>/<int:menu_id>/edit',
+    methods=['GET','POST']
+    )
 def editMenuItem(restaurant_id, menu_id):
-    return "page to edit a menu item. Task 2 complete!"
+    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+    menuItem = session.query(MenuItem).filter_by(id = menu_id).one()
+    if request.method == 'GET':
+        output = HB()
+        output.add_html("""
+            <h1> Edit %s for %s </h1>
+            <form method='POST' action='%s'>
+                <label>Name:
+                    <input name='name' placeholder='%s'>
+                </label>
+                <br />
+                <label>Price:
+                    <input name='price' placeholder='%s'>
+                </label>
+                <br />
+                <label>Description:
+                    <input name='description' placeholder='%s'>
+                </label>
+                <br />
+                <label>Course:
+                    <input name='course' placeholder='%s'>
+                </label>
+                <br />
+                <input type='submit' value='CREATE'>
+            </form>
+            """ % (menuItem.name, restaurant.name, request.path, menuItem.name,
+                menuItem.price, menuItem.description, menuItem.course)
+            )
+        return output.get_html()
+
+    if request.method == 'POST':
+        params = request.form
+        try:
+            item = MenuItem(
+                    name=params['name'],
+                    price=params['price'],
+                    course=params['course'],
+                    description=params['description'],
+                    restaurant=restaurant
+                    )
+            session.add(item)
+            session.commit()
+
+            output = HB()
+            output.add_html("""
+                <h1>Successfuly create %s </h1>
+                <a href="%s">Back to %s</a>
+                """ % (params['name'], request.path, restaurant.name)
+                )
+            return output.get_html()
+
+        except:
+            session.rollback()
+            raise
+            output = HB()
+            output.add_html("""
+                <h1>Failed to create new menu item</h1>
+                <a href=%s> try again </a>
+                <a href='/retaurants> back to restaurants </a>
+                """ % request.path
+                )
+            return output.get_html()
 
 # Task 3: Create a route for deleteMenuItem function here
 def deleteMenuItem(restaurant_id, menu_id):
