@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, redirect
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -187,7 +187,6 @@ def deleteMenuItem(restaurant_id, menu_id):
     menuItem = query_db.get_one(session, MenuItem, menu_id)
     restaurant = query_db.get_one(session, Restaurant, restaurant_id)
     output = HB()
-    print('form: ', request.form)
 
     if request.method == 'GET':
         output.add_html("""
@@ -201,8 +200,8 @@ def deleteMenuItem(restaurant_id, menu_id):
         return output.get_html()
 
     if request.method == 'POST':
+        restaurant_path = '/'.join(request.path.split('/')[:3])
         if request.form['should_delete'].lower() == 'yes':
-            restaurant_path = '/'.join(request.path.split('/')[:3])
             try:
                 query_db.delete(session, menuItem)
                 session.commit()
@@ -224,8 +223,7 @@ def deleteMenuItem(restaurant_id, menu_id):
                     )
                 return output.get_html()
         else:
-            print(request.path.split())
-            return restaurant_path
+            return redirect('/restaurants/%s/' % restaurant.id)
 
 if __name__ == '__main__':
     app.debug = True
