@@ -38,7 +38,7 @@ def restaurantMenu(restaurant_id):
             <p> %s </p>
             <a href=%sedit>edit</a>
             <a href=%sdelete>delete</a>
-            </br>
+            <hr />
         """ % (item.name, item.price, item.description, request.path +
             str(item.id) + '/',
             request.path)
