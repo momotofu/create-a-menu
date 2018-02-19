@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, render_template
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -18,22 +18,7 @@ session = DBSession()
 @app.route('/restaurants')
 def allRestaurants():
     restaurants = query_db.get_all(session, Restaurant)
-
-    output = HB()
-    output.add_html("""
-        <h1>Your restaurants</h1>
-        """
-        )
-
-    for restaurant in restaurants:
-        output.add_html("""
-            <h4>%s</h4>
-            <a href="%s">see menu items</a>
-            <hr />
-            """ % (restaurant.name, '/restaurants/' + str(restaurant.id))
-            )
-
-    return output.get_html()
+    return render_template('menu.html', restaurants=restaurants)
 
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
