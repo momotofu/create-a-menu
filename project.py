@@ -15,6 +15,26 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 @app.route('/')
+@app.route('/restaurants')
+def allRestaurants():
+    restaurants = query_db.get_all(session, Restaurant)
+
+    output = HB()
+    output.add_html("""
+        <h1>Your restaurants</h1>
+        """
+        )
+
+    for restaurant in restaurants:
+        output.add_html("""
+            <h4>%s</h4>
+            <a href="%s">see menu items</a>
+            <hr />
+            """ % (restaurant.name, '/restaurants/' + str(restaurant.id))
+            )
+
+    return output.get_html()
+
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
@@ -29,6 +49,8 @@ def restaurantMenu(restaurant_id):
 
     output.add_html("""
         <a href='%snew-item'>create a new item</a>
+        <br />
+        <a href='/restaurants'>back to all restaurants</a>
         """ % request.path
         )
 
