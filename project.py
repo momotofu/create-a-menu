@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
 
 from html_builder import HTML_Builder as HB
+import query_db
 
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
@@ -32,6 +33,7 @@ def restaurantMenu(restaurant_id):
         )
 
     for item in items:
+        item_path = request.path + str(item.id) + '/'
         output.add_html("""
             <h4> %s </h4>
             <p> %s </p>
@@ -39,9 +41,7 @@ def restaurantMenu(restaurant_id):
             <a href=%sedit>edit</a>
             <a href=%sdelete>delete</a>
             <hr />
-        """ % (item.name, item.price, item.description, request.path +
-            str(item.id) + '/',
-            request.path)
+        """ % (item.name, item.price, item.description, item_path, item_path)
         )
 
     return output.get_html()
@@ -94,7 +94,7 @@ def newMenuItem(restaurant_id):
             output.add_html("""
                 <h1>Successfuly create %s </h1>
                 <a href="%s">Back to %s</a>
-                """ % (params['name'], request.path, restaurant.name)
+                """ % (params['name'], '/'.join(request.path.split('/')[:3]), restaurant.name)
                 )
             return output.get_html()
 
@@ -181,8 +181,51 @@ def editMenuItem(restaurant_id, menu_id):
             return output.get_html()
 
 
+@app.route('/restaurants/<int:restaurant_id>/<int:menu_id>/delete/',
+    methods=['GET', 'POST'])
 def deleteMenuItem(restaurant_id, menu_id):
-    return "page to delete a menu item. Task 3 complete!"
+    menuItem = query_db.get_one(session, MenuItem, menu_id)
+    restaurant = query_db.get_one(session, Restaurant, restaurant_id)
+    output = HB()
+    print('form: ', request.form)
+
+    if request.method == 'GET':
+        output.add_html("""
+            <h1>Are you sure you want to delete %s</h1>
+            <form method='POST' action='%s'>
+                <input type='submit' name='should_delete' value='YES'>
+                <input type='submit' name='should_delete' value='NO'>
+            </form>
+            """ % (menuItem.name, request.path)
+            )
+        return output.get_html()
+
+    if request.method == 'POST':
+        if request.form['should_delete'].lower() == 'yes':
+            restaurant_path = '/'.join(request.path.split('/')[:3])
+            try:
+                query_db.delete(session, menuItem)
+                session.commit()
+
+                output.add_html("""
+                    <h1>Successfully deleted %s</h1>
+                    <a href='%s'>Back to %s</a>
+                    """ % (menuItem.name, restaurant_path, restaurant.name)
+                    )
+                return output.get_html()
+            except:
+                session.rollback()
+                raise
+                output.add_html("""
+                    <h1>Failed to create new menu item</h1>
+                    <a href=%s> try again </a>
+                    <a href='/retaurants> back to restaurants </a>
+                    """ % request.path
+                    )
+                return output.get_html()
+        else:
+            print(request.path.split())
+            return restaurant_path
 
 if __name__ == '__main__':
     app.debug = True
