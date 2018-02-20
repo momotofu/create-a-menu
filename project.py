@@ -19,41 +19,14 @@ session = DBSession()
 @app.route('/restaurants')
 def allRestaurants():
     restaurants = query_db.get_all(session, Restaurant)
-    return render_template('menu.html', restaurants=restaurants)
+    return render_template('restaurants.html', restaurants=restaurants)
 
 
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id)
-
-    output = HB()
-
-    output.add_html("""
-        <h1>%s</h1>
-        """ % restaurant.name
-        )
-
-    output.add_html("""
-        <a href='%snew-item'>create a new item</a>
-        <br />
-        <a href='/restaurants'>back to all restaurants</a>
-        """ % request.path
-        )
-
-    for item in items:
-        item_path = request.path + str(item.id) + '/'
-        output.add_html("""
-            <h4> %s </h4>
-            <p> %s </p>
-            <p> %s </p>
-            <a href=%sedit>edit</a>
-            <a href=%sdelete>delete</a>
-            <hr />
-        """ % (item.name, item.price, item.description, item_path, item_path)
-        )
-
-    return output.get_html()
+    return render_template('menu.html', restaurant=restaurant, menuItems=items)
 
 
 @app.route('/restaurants/<int:restaurant_id>/new-item/', methods=['GET', 'POST'])
@@ -98,6 +71,8 @@ def newMenuItem(restaurant_id):
                     )
             session.add(item)
             session.commit()
+
+            flash("new menu item created!")
 
             output = HB()
             output.add_html("""
@@ -235,5 +210,6 @@ def deleteMenuItem(restaurant_id, menu_id):
             return redirect('/restaurants/%s/' % restaurant.id)
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host = '0.0.0.0', port=5000)
