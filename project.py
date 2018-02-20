@@ -33,31 +33,7 @@ def restaurantMenu(restaurant_id):
 def newMenuItem(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'GET':
-        output = HB()
-        output.add_html("""
-            <h1> Create a new menu item for %s </h1>
-            <form method='POST' action='%s'>
-                <label>Name:
-                    <input name='name'>
-                </label>
-                <br />
-                <label>Price:
-                    <input name='price'>
-                </label>
-                <br />
-                <label>Description:
-                    <input name='description'>
-                </label>
-                <br />
-                <label>Course:
-                    <input name='course'>
-                </label>
-                <br />
-                <input type='submit' value='CREATE'>
-            </form>
-            """ % (restaurant.name, request.path)
-            )
-        return output.get_html()
+        return render_template('newMenuItem.html', restaurant=restaurant)
 
     if request.method == 'POST':
         params = request.form
@@ -74,13 +50,8 @@ def newMenuItem(restaurant_id):
 
             flash("new menu item created!")
 
-            output = HB()
-            output.add_html("""
-                <h1>Successfuly create %s </h1>
-                <a href="%s">Back to %s</a>
-                """ % (params['name'], '/'.join(request.path.split('/')[:3]), restaurant.name)
-                )
-            return output.get_html()
+            return redirect(url_for('restaurantMenu',
+                restaurant_id=restaurant.id))
 
         except:
             session.rollback()
