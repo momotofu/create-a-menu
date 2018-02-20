@@ -69,30 +69,8 @@ def editMenuItem(restaurant_id, menu_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     menuItem = session.query(MenuItem).filter_by(id = menu_id).one()
     if request.method == 'GET':
-        output = HB()
-        output.add_html("""
-            <h1> Edit %s for %s </h1>
-            <form method='POST' action='%s'>
-                <label>Name:
-                    <input name='name' value='%s'>
-                </label>
-                <br />
-                <label>Price:
-                    <input name='price' value='%s'>
-                </label>
-                <br />
-                <label>Description:
-                    <input name='description' value='%s'>
-                </label>
-                <br />
-                <label>Course:
-                    <input name='course' value='%s'>
-                </label>
-                <br />
-                <input type='submit' value='SUBMIT'>
-            </form>
-            """ % (menuItem.name, restaurant.name, request.path, menuItem.name, menuItem.price, menuItem.description, menuItem.course))
-        return output.get_html()
+        return render_template('editMenuItem.html', restaurant=restaurant,
+                item=menuItem)
 
     if request.method == 'POST':
         params = request.form
@@ -109,14 +87,11 @@ def editMenuItem(restaurant_id, menu_id):
             session.add(menuItem)
             session.commit()
 
-            output = HB()
-            output.add_html("""
-                <h1>Successfuly edited %s </h1>
-                <a href="%s">Back to %s</a>
-                """ % (params['name'], ('/').join(request.path.split('/')[:3])
-                    + '/', restaurant.name)
-                )
-            return output.get_html()
+            flash("Successfuly edited %s's %s" % (restaurant.name,
+                    menuItem.name))
+
+            return redirect(url_for("restaurantMenu",
+                restaurant_id=restaurant.id))
 
         except:
             session.rollback()

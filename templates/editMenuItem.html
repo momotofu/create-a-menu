@@ -5,20 +5,22 @@
   </head>
   <body>
     <h1>Create new menu item for {{ restaurant.name }}</h1>
-    <form action={{ url_for('newMenuItem', restaurant_id=restaurant.id) }} method="POST">
+    <form action={{ url_for('editMenuItem', restaurant_id=restaurant.id,
+      menu_id=item.id) }} method="POST">
       <label> Name:
-        <input type="text" name="name" value="" />
+        <input type="text" name="name" value="{{ item.name }}" />
       </label>
       <label> Price:
-        <input type="text" name="price" value="" />
+        <input type="text" name="price" value="{{ item.price }}" />
       </label>
       <label> Description:
-        <input type="text" name="description" value="" />
+        <input type="text" name="description" value="{{ item.description
+        }}" />
       </label>
       <label> Course:
-        <input type="text" name="course" value="" />
+        <input type="text" name="course" value="{{ item.course }}" />
       </label>
-      <input type="submit" value="CREATE">
+      <input type="submit" value="UPDATE">
     </form>
   </body>
 </html>
