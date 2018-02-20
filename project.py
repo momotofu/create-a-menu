@@ -133,15 +133,11 @@ def deleteMenuItem(restaurant_id, menu_id):
             except:
                 session.rollback()
                 raise
-                output.add_html("""
-                    <h1>Failed to create new menu item</h1>
-                    <a href=%s> try again </a>
-                    <a href='/retaurants> back to restaurants </a>
-                    """ % request.path
-                    )
-                return output.get_html()
+                return render_template('deleteMenuItemFailed',
+                        restaurant=restaurant, item=menuItem)
         else:
-            return redirect('/restaurants/%s/' % restaurant.id)
+            return redirect(url_for('restaurantMenu',
+                restaurant_id=restaurant.id))
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
