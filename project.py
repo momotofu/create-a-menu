@@ -104,19 +104,10 @@ def editMenuItem(restaurant_id, menu_id):
 def deleteMenuItem(restaurant_id, menu_id):
     menuItem = query_db.get_one(session, MenuItem, menu_id)
     restaurant = query_db.get_one(session, Restaurant, restaurant_id)
-    output = HB()
 
     if request.method == 'GET':
-        output.add_html("""
-            <h1>Are you sure you want to delete %s</h1>
-            <form method='POST' action='%s'>
-                <input type='submit' name='should_delete' value='YES'>
-                <input type='submit' name='should_delete' value='NO'>
-            </form>
-            """ % (menuItem.name, request.path)
-            )
-        return output.get_html()
-
+        return render_template('confirmMenuItemDelete.html',
+                restaurant=restaurant, item=menuItem)
     if request.method == 'POST':
         restaurant_path = '/'.join(request.path.split('/')[:3])
         if request.form['should_delete'].lower() == 'yes':
@@ -124,12 +115,9 @@ def deleteMenuItem(restaurant_id, menu_id):
                 query_db.delete(session, menuItem)
                 session.commit()
 
-                output.add_html("""
-                    <h1>Successfully deleted %s</h1>
-                    <a href='%s'>Back to %s</a>
-                    """ % (menuItem.name, restaurant_path, restaurant.name)
-                    )
-                return output.get_html()
+                flash("successfully deleted %s" % menuItem.name)
+
+                return redirect(url_for('restaurantMenu', restaurant_id=restaurant.id))
             except:
                 session.rollback()
                 raise

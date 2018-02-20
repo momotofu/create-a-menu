@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Confirm {{ item.name }} deletion</title>
+  </head>
+  <h1>Are you sure you want to delete {{ item.name }}</h1>
+  <form action={{ url_for('deleteMenuItem',
+                  restaurant_id=restaurant.id,
+                  menu_id=item.id) }} method="post">
+    <input type="submit" name="should_delete" value="YES" />
+    <input type="submit" name="should_delete" value="NO" />
+  </form>
+</html>
