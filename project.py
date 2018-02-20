@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, url_for
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -14,11 +14,13 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 @app.route('/')
 @app.route('/restaurants')
 def allRestaurants():
     restaurants = query_db.get_all(session, Restaurant)
     return render_template('menu.html', restaurants=restaurants)
+
 
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
