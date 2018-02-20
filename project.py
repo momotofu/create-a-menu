@@ -96,15 +96,8 @@ def editMenuItem(restaurant_id, menu_id):
         except:
             session.rollback()
             raise
-            output = HB()
-            output.add_html("""
-                <h1>Failed to create new menu item</h1>
-                <a href=%s> try again </a>
-                <a href='/retaurants> back to restaurants </a>
-                """ % request.path
-                )
-            return output.get_html()
-
+            return render_template('editMenuItemFailed.html',
+                    restaurant=restaurant, item=menuItem)
 
 @app.route('/restaurants/<int:restaurant_id>/<int:menu_id>/delete/',
     methods=['GET', 'POST'])
