@@ -37,6 +37,7 @@ def newMenuItem(restaurant_id):
 
     if request.method == 'POST':
         params = request.form
+        # TODO: form validation
         try:
             item = MenuItem(
                     name=params['name'],
@@ -56,14 +57,8 @@ def newMenuItem(restaurant_id):
         except:
             session.rollback()
             raise
-            output = HB()
-            output.add_html("""
-                <h1>Failed to create new menu item</h1>
-                <a href=%s> try again </a>
-                <a href='/retaurants> back to restaurants </a>
-                """ % request.path
-                )
-            return output.get_html()
+            return render_template('newMenuItemFailed.html',
+                    restaurant=restaurant)
 
 
 @app.route(
