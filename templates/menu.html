@@ -2,39 +2,42 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>{{ restaurant.name + " menu items" }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   </head>
   <body>
-    <h1>{{ restaurant.name }}</h1>
+    <div class='container'>
+      <h1>{{ restaurant.name }}</h1>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
 
-    <ul>
-    {% for message in messages %}
-      <li><strong>{{message}}</strong></li>
+      <ul>
+      {% for message in messages %}
+        <li><strong>{{message}}</strong></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+
+      <a href={{ url_for('newMenuItem', restaurant_id=restaurant.id) }}>
+        Create a new menu item
+      </a>
+      <a href={{ url_for('allRestaurants') }}>
+        Go back to restaurants
+      </a>
+      {% for item in menuItems %}
+      <h4>{{ item.name }}</h4>
+      <p>{{ item.price }}</p>
+      <p>{{ item.description }}</p>
+      <a href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
+        menu_id=item.id) }}>
+        edit
+      </a>
+      <a href={{ url_for('deleteMenuItem', restaurant_id=restaurant.id,
+        menu_id=item.id) }}>
+        delete
+      </a>
       {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
-    <a href={{ url_for('newMenuItem', restaurant_id=restaurant.id) }}>
-      Create a new menu item
-    </a>
-    <a href={{ url_for('allRestaurants') }}>
-      Go back to restaurants
-    </a>
-    {% for item in menuItems %}
-    <h4>{{ item.name }}</h4>
-    <p>{{ item.price }}</p>
-    <p>{{ item.description }}</p>
-    <a href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
-      menu_id=item.id) }}>
-      edit
-    </a>
-    <a href={{ url_for('deleteMenuItem', restaurant_id=restaurant.id,
-      menu_id=item.id) }}>
-      delete
-    </a>
-    {% endfor %}
+    </div>
   </body>
 </html>
