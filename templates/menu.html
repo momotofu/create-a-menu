@@ -6,24 +6,27 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',
     filename='styles.css') }}">
   </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <body class="bg-light">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-info
+      text-light">
       <ul class="navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href={{ url_for('allRestaurants') }}>
             restaurants
           </a>
         </li>
       </ul>
     </nav>
-    <div class="container">
+    <div class="container main-content">
       <section class="row">
-        <h1>{{ restaurant.name }}</h1>
+        <div class="col-12 mb-3">
+          <h1>{{ restaurant.name }}</h1>
+        </div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>
         {% for message in messages %}
-          <li><strong>{{message}}</strong></li>
+          <li class="alert alert-success"><strong>{{message}}</strong></li>
           {% endfor %}
         </ul>
         {% endif %}
@@ -31,20 +34,21 @@
       </section>
       <section class="justify-content-center">
         <div class="row">
-          <div class="col-5">
+          <div class="col-lg-5">
             <button type="button" class="btn btn-outline-primary btn-lg btn-block
                                   mb-4 mt-2"
                                   onclick="window.location='{{
                                            url_for('newMenuItem',
                                                     restaurant_id=restaurant.id) 
                                   }}'">
-              new menu item
+              create new menu item
             </button>
           </div>
         </div>
         <div class="row">
           {% for item in menuItems %}
-           <div class="card mb-2 mr-2" style="width: 18rem;">
+          <div class="col-sm-6 mb-4">
+           <div class="card">
             <div class="card-body">
               <h5 class="card-title">{{ item.name }}</h5>
               <h6 class="card-subtitle mb-2 text-muted">{{ item.description }}</h6>
@@ -61,6 +65,7 @@
               </div>
             </div>
            </div>
+          </div>
           {% endfor %}
         </div>
       </section>
