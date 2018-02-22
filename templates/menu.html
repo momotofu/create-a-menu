@@ -1,76 +1,60 @@
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>{{ restaurant.name + " menu items" }}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',
-    filename='styles.css') }}">
-  </head>
-  <body class="bg-light">
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-warning
-      text-light">
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href={{ url_for('allRestaurants') }}>
-            all restaurants
-          </a>
-        </li>
-      </ul>
-    </nav>
-    <div class="container main-content">
-      <section class="row">
-        <div class="col-12 mb-3">
-          <h1>{{ restaurant.name }}</h1>
-        </div>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-        {% for message in messages %}
-          <li class="alert alert-success"><strong>{{message}}</strong></li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
-      </section>
-      <section class="justify-content-center">
-        <div class="row">
-          <div class="col-lg-5">
-            <button type="button" class="btn btn-outline-primary btn-lg btn-block
-                                  mb-4 mt-2"
-                                  onclick="window.location='{{
-                                           url_for('newMenuItem',
-                                                    restaurant_id=restaurant.id) 
-                                  }}'">
-              create new menu item
-            </button>
-          </div>
-        </div>
-        <div class="row">
-          {% for item in menuItems %}
-          <div class="col-sm-6 mb-4">
-           <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{ item.name }}</h5>
-              <h6 class="card-subtitle mb-2 text-muted">{{ item.description }}</h6>
-              <p class="card-text">{{ item.price }}</p>
-              <div class="card-link-container">
-                <a class="card-link btn btn-outline-secondary" href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
-                  menu_id=item.id) }}>
-                  edit
-                </a>
-                <a class="card-link btn btn-outline-secondary" href={{ url_for('deleteMenuItem', restaurant_id=restaurant.id,
-                  menu_id=item.id) }}>
-                  delete
-                </a>
-              </div>
-            </div>
-           </div>
-          </div>
-          {% endfor %}
-        </div>
-      </section>
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% block title %}
+    {{ restaurant.name + " menu items" }}
+  {% endblock %}
+{% endblock %}
+{% block mainContent %}
+<section class="row">
+  <div class="col-12 mb-3">
+    <h1>{{ restaurant.name }}</h1>
+  </div>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+  {% for message in messages %}
+    <li class="alert alert-success"><strong>{{message}}</strong></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+</section>
+<section class="justify-content-center">
+  <div class="row">
+    <div class="col-lg-5">
+      <button type="button" class="btn btn-outline-primary btn-lg btn-block
+                            mb-4 mt-2"
+                            onclick="window.location='{{
+                                     url_for('newMenuItem',
+                                              restaurant_id=restaurant.id) 
+                            }}'">
+        create new menu item
+      </button>
     </div>
-    <footer class="container footer">
-    </footer>
-  </body>
-</html>
+  </div>
+  <div class="row">
+    {% for item in menuItems %}
+    <div class="col-sm-6 mb-4">
+     <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ item.name }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">{{ item.description }}</h6>
+        <p class="card-text">{{ item.price }}</p>
+        <div class="card-link-container">
+          <a class="card-link btn btn-outline-secondary" href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
+            menu_id=item.id) }}>
+            edit
+          </a>
+          <a class="card-link btn btn-outline-secondary" href={{ url_for('deleteMenuItem', restaurant_id=restaurant.id,
+            menu_id=item.id) }}>
+            delete
+          </a>
+        </div>
+      </div>
+     </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

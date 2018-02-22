@@ -1,39 +1,23 @@
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Your restaurants</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',
-    filename='styles.css') }}">
-  </head>
-  <body class="bg-light">
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-warning
-      text-light">
-      <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" href={{ url_for('allRestaurants') }}>
-            all restaurants
-          </a>
-        </li>
-      </ul>
-    </nav>
-    <div class="container main-content">
-      <section class="row">
-        <header class="col-12 mb-3">
-          <h1>Your restaurants</h1>
-        </header>
-      </section>
-      <section class="row">
-        <div class="list-group col-lg-12">
-          {% for restaurant in restaurants %}
-          <a class="list-group-item list-group-item-action" href={{ url_for('restaurantMenu', restaurant_id=restaurant.id) }}>
-            {{ restaurant.name }}'s menu items
-          </a>
-          {% endfor %}
-        </div>
-      </section>
-    </div>
-    <footer class="container footer">
-    </footer>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% block title %}
+    Your restaurants
+  {% endblock %}
+{% endblock %}
+{% block mainContent %}
+<section class="row">
+  <header class="col-12 mb-3">
+    <h1>Your restaurants</h1>
+  </header>
+</section>
+<section class="row">
+  <div class="list-group col-lg-12">
+    {% for restaurant in restaurants %}
+    <a class="list-group-item list-group-item-action" href={{ url_for('restaurantMenu', restaurant_id=restaurant.id) }}>
+      {{ restaurant.name }}'s menu items
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
