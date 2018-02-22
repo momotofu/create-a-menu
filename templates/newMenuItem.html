@@ -1,24 +1,65 @@
-<html>
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <title>Create new item for {{ restaurant.name }}</title>
-  </head>
-  <body>
-    <h1>Create new menu item for {{ restaurant.name }}</h1>
-    <form action={{ url_for('newMenuItem', restaurant_id=restaurant.id) }} method="POST">
-      <label> Name:
-        <input type="text" name="name" value="" />
-      </label>
-      <label> Price:
-        <input type="text" name="price" value="" />
-      </label>
-      <label> Description:
-        <input type="text" name="description" value="" />
-      </label>
-      <label> Course:
-        <input type="text" name="course" value="" />
-      </label>
-      <input type="submit" value="CREATE">
-    </form>
-  </body>
-</html>
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% block title %}
+    Create new item for {{ restaurant.name }}
+  {% endblock %}
+{% endblock %}
+{% block nav %}
+  <li class="nav-item">
+    <a class="nav-link" href={{ url_for('allRestaurants') }}>
+      all restaurants
+    </a>
+  </li>
+  <li class="nav-item active">
+    <a class="nav-link" href={{ url_for('restaurantMenu',
+      restaurant_id=restaurant.id) }}>
+      {{ restaurant.name }}'s menu
+    </a>
+  </li>
+{% endblock %}
+{% block mainContent %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <form class="card-body card-body-form" action={{ url_for('newMenuItem', restaurant_id=restaurant.id) }} method="POST">
+        <h5 class="card-title">Create a new menu item </h5>
+        <h6 class="card-subtitle text-muted mb-4">for {{ restaurant.name }}</h6>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" name="name">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              Name
+            </span>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" name="price">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              Price
+            </span>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" name="description">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              Description
+            </span>
+          </div>
+        </div>
+        <div class="input-group mb-4">
+          <input type="text" class="form-control" name="course">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              Course
+            </span>
+          </div>
+        </div>
+        <input class="btn btn-primary btn-lg btn-block" type="submit" value="CREATE">
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

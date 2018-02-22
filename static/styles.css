@@ -23,6 +23,10 @@ ul {
   padding-bottom: 4rem;
 }
 
+.card-body-form {
+  padding-bottom: 1.5rem;
+}
+
 @media (min-width: 1200px) {
   .container {
     width: 960px;

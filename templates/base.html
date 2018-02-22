@@ -12,17 +12,17 @@
     {% endblock %}
   </head>
   <body class="bg-light">
-    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-warning
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark
       text-light">
-      {% block nav %}
       <ul class="navbar-nav">
+        {% block nav %}
         <li class="nav-item active">
           <a class="nav-link" href={{ url_for('allRestaurants') }}>
             all restaurants
           </a>
         </li>
+        {% endblock %}
       </ul>
-      {% endblock %}
     </nav>
     <div class="container main-content">
       {% block mainContent %}
