@@ -6,6 +6,10 @@ ul {
   margin-top: 120px;
 }
 
+.footer {
+  min-height: 260px;
+}
+
 .card {
   min-height: 260px;
 }
