@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% block title %}
+    edit {{ restaurant.name }}
+  {% endblock %}
+{% endblock %}
+{% block mainContent %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card card-form mb-4">
+      <form class="card-body card-body-form" action={{
+        url_for('editRestaurant', restaurant_id=restaurant.id) }} method="POST">
+        <h5 class="card-title">Edit {{ restaurant.name }} </h5>
+        <h6 class="card-subtitle text-muted mb-4">for {{ restaurant.name }}</h6>
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" name="name" value="{{
+          restaurant.name }}">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              Name
+            </span>
+          </div>
+        </div>
+        <input class="btn btn-primary btn-lg btn-block" type="submit"
+        value="UPDATE">
+      </form>
+    </div>
+    <a class="btn btn-outline-secondary btn-lg btn-block" href={{ url_for('restaurantMenu',
+      restaurant_id=restaurant.id) }}>
+      CANCEL
+    </a>
+  </div>
+</div>
+{% endblock %}

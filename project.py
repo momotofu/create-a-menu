@@ -34,17 +34,35 @@ def newRestaurant():
                 query_db.update(session, restaurant)
                 session.commit()
                 restaurants = query_db.get_all(session, Restaurant)
-                return render_template('restaurants.html', restaurants=restaurants)
+                return redirect(url_for('allRestaurants'))
            except:
                raise
 
 
-@app.route('/restaurants/<int:restaurant_id>/editRestaurant/')
+@app.route('/restaurants/<int:restaurant_id>/editRestaurant/', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
-    pass
+    restaurant = query_db.get_one(session, Restaurant, restaurant_id)
+
+    if request.method == 'GET':
+        return render_template('editRestaurant.html', restaurant=restaurant)
+    if request.method == 'POST':
+        params = request.form
+        if 'name' in params.keys():
+            restaurant.name = params['name']
+        try:
+            query_db.update(session, restaurant)
+            session.commit()
+
+            flash("Successfully updated %s" % restaurant.name)
+
+            return redirect(url_for('allRestaurants'))
+        except:
+            session.rollback()
+            redirect(url_for('allRestaurants'))
+            raise
 
 
-@app.route('/restaurants/<int:restaurant_id>/deleteRestaurant/')
+@app.route('/restaurants/<int:restaurant_id>/deleteRestaurant/', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
     pass
 
