@@ -32,11 +32,28 @@
   <div class="col-lg-12">
     <div class="list-group">
       {% for restaurant in restaurants %}
-      <a class="list-group-item list-group-item-action" href={{ url_for('restaurantMenu', restaurant_id=restaurant.id) }}>
-        {{ restaurant.name }}'s menu items
-        <span class="btn btn-outline-secondary btn-sm float-right">delete</span>
-        <span class="btn btn-outline-primary btn-sm float-right mr-3">edit</span>
-      </a>
+      <div class="list-group-item list-group-item-action">
+        <span class="list-title">
+          {{ restaurant.name }}
+        </span>
+        <button
+          class="btn btn-outline-secondary btn-sm float-right"
+          onclick="window.location='{{ url_for('deleteRestaurant',
+          restaurant_id=restaurant.id)}}'">
+            delete
+        </button>
+        <button
+          class="btn btn-outline-secondary btn-sm float-right mr-3"
+          onclick="window.location='{{ url_for('editRestaurant',
+          restaurant_id=restaurant.id) }}'">
+            edit
+        </button>
+        <button class="btn btn-outline-primary btn-sm float-right mr-3"
+              onclick="window.location='{{ url_for('restaurantMenu',
+        restaurant_id=restaurant.id) }}'">
+          menu
+        </button>
+      </div>
       {% endfor %}
     </div>
   </div>

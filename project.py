@@ -39,6 +39,16 @@ def newRestaurant():
                raise
 
 
+@app.route('/restaurants/<int:restaurant_id>/editRestaurant/')
+def editRestaurant(restaurant_id):
+    pass
+
+
+@app.route('/restaurants/<int:restaurant_id>/deleteRestaurant/')
+def deleteRestaurant(restaurant_id):
+    pass
+
+
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()

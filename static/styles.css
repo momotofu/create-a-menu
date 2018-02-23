@@ -37,3 +37,10 @@ ul {
   }
 }
 
+@media (max-width: 500px) {
+  .list-title {
+    display: block;
+    margin-bottom: 1.5rem;
+  }
+}
+
