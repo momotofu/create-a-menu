@@ -14,6 +14,10 @@ ul {
   min-height: 260px;
 }
 
+.card-form {
+  min-height: 0;
+}
+
 .card-link-container {
   position: absolute;
   bottom: 1.5rem;

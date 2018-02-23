@@ -21,7 +21,7 @@
 {% block mainContent %}
 <div class="row justify-content-center">
   <div class="col-lg-6">
-    <div class="card mb-4">
+    <div class="card card-form mb-4">
       <form class="card-body card-body-form" action={{ url_for('editMenuItem', restaurant_id=restaurant.id,
       menu_id=item.id) }} method="POST">
         <h5 class="card-title">Edit {{ item.name }} </h5>
