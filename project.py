@@ -25,9 +25,19 @@ def allRestaurants():
 @app.route('/restaurants/new/', methods=['GET', 'POST'])
 def newRestaurant():
     if request.method == 'GET':
-        pass
+        return render_template('newRestaurant.html')
     if request.method == 'POST':
-        pass
+        params = request.form
+        if 'name' in params.keys():
+           restaurant = Restaurant(name=params['name'])
+           try:
+                query_db.update(session, restaurant)
+                session.commit()
+                restaurants = query_db.get_all(session, Restaurant)
+                return render_template('restaurants.html', restaurants=restaurants)
+           except:
+               raise
+
 
 @app.route('/restaurants/<int:restaurant_id>/')
 def restaurantMenu(restaurant_id):

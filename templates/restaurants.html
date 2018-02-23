@@ -34,6 +34,8 @@
       {% for restaurant in restaurants %}
       <a class="list-group-item list-group-item-action" href={{ url_for('restaurantMenu', restaurant_id=restaurant.id) }}>
         {{ restaurant.name }}'s menu items
+        <span class="btn btn-outline-secondary btn-sm float-right">delete</span>
+        <span class="btn btn-outline-primary btn-sm float-right mr-3">edit</span>
       </a>
       {% endfor %}
     </div>
