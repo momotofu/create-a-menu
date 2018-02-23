@@ -66,33 +66,49 @@ def newMenuItem(restaurant_id):
     methods=['GET','POST']
     )
 def editMenuItem(restaurant_id, menu_id):
-    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
-    menuItem = session.query(MenuItem).filter_by(id = menu_id).one()
+    try:
+        restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+        menuItem = session.query(MenuItem).filter_by(id = menu_id).one()
+    except:
+        raise
+        return
+
     if request.method == 'GET':
         return render_template('editMenuItem.html', restaurant=restaurant,
                 item=menuItem)
 
     if request.method == 'POST':
         params = request.form
+        print('params set')
         try:
+            print('started on menuItem update')
+            print('params: ', params)
+            print('menuItem: ', menuItem)
+
             if menuItem.name != params['name']:
                 menuItem.name = params['name']
+                print('test 1')
             if menuItem.price != params['price']:
                 menuItem.price = params['price']
+                print('test 2')
             if menuItem.description != params['description']:
                 menuItem.description = params['description']
+                print('test 3')
             if menuItem.course != params['course']:
                 menuItem.course = params['course']
+                print('test 4')
+
+            print('updated menuItem')
 
             session.add(menuItem)
             session.commit()
+            print('session commit()')
 
             flash("Successfuly edited %s's %s" % (restaurant.name,
                     menuItem.name))
 
             return redirect(url_for("restaurantMenu",
                 restaurant_id=restaurant.id))
-
         except:
             session.rollback()
             raise
