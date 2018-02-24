@@ -53,7 +53,7 @@ def editRestaurant(restaurant_id):
             query_db.update(session, restaurant)
             session.commit()
 
-            flash("Successfully updated %s" % restaurant.name)
+            flash("Successfully updated %s!" % restaurant.name)
 
             return redirect(url_for('allRestaurants'))
         except:
