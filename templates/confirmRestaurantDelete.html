@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% block title %}
+    Confirm {{ restaurant.name }} deletion
+  {% endblock %}
+{% endblock %}
+{% block nav %}
+  <li class="nav-item">
+    <a class="nav-link" href={{ url_for('allRestaurants') }}>
+      all restaurants
+    </a>
+  </li>
+  <li class="nav-item active">
+    <a class="nav-link" href={{ url_for('restaurantMenu',
+      restaurant_id=restaurant.id) }}>
+      {{ restaurant.name }}'s menu
+    </a>
+  </li>
+{% endblock %}
+{% block mainContent %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card card-form mb-4">
+      <form class="card-body card-body-form" action={{
+            url_for('deleteRestaurant', restaurant_id=restaurant.id) }} method="POST">
+        <h5 class="card-title">Truly delete {{ restaurant.name }}? </h5>
+        <input class="btn btn-primary btn-lg btn-block" name="should_delete" type="submit"
+        value="YES">
+        <a class="btn btn-outline-secondary btn-lg btn-block" href={{
+           url_for('allRestaurants') }}>
+          CANCEL
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
