@@ -1,4 +1,5 @@
-from flask import Flask, request, redirect, render_template, url_for, flash
+from flask import Flask, request, redirect, render_template, url_for, flash,
+jsonify
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -26,7 +27,10 @@ def serialize(self):
         'course' : self.course
         }
 
+# API endpoints
 
+
+# Routes
 @app.route('/')
 @app.route('/restaurants')
 def allRestaurants():
