@@ -15,6 +15,17 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+@property
+def serialize(self):
+    # returns object data in easily serializeable format
+    return {
+        'name' : self.name,
+        'description' : self.description,
+        'id' : self.id,
+        'price' : self.price,
+        'course' : self.course
+        }
+
 
 @app.route('/')
 @app.route('/restaurants')
