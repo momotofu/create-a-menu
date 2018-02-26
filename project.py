@@ -16,16 +16,6 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-@property
-def serialize(self):
-    # returns object data in easily serializeable format
-    return {
-        'name' : self.name,
-        'description' : self.description,
-        'id' : self.id,
-        'price' : self.price,
-        'course' : self.course
-        }
 
 # API endpoints
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
@@ -33,8 +23,16 @@ def restaurantMenuJSON(restaurant_id):
     try:
         restaurant = query_db.get_one(session, Restaurant, restaurant_id)
         items = query_db.get_items(session, MenuItem, restaurant_id)
-        print('items: ', items)
         return jsonify(MenuItems=[item.serialize for item in items])
+    except:
+        raise
+
+@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+def restaurantMenuItemJSON(restaurant_id, menu_id):
+    try:
+        item = query_db.get_one(session, MenuItem, restaurant_id)
+        print('items: ', item.name)
+        return jsonify(item.serialize)
     except:
         raise
 
