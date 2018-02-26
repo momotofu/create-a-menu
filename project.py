@@ -1,5 +1,5 @@
-from flask import Flask, request, redirect, render_template, url_for, flash,
-jsonify
+from flask import Flask, request, redirect, render_template
+from flask import url_for, flash, jsonify
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -28,6 +28,15 @@ def serialize(self):
         }
 
 # API endpoints
+@app.route('/restaurants/<int:restaurant_id>/menu/JSON')
+def restaurantMenuJSON(restaurant_id):
+    try:
+        restaurant = query_db.get_one(session, Restaurant, restaurant_id)
+        items = query_db.get_items(session, MenuItem, restaurant_id)
+        print('items: ', items)
+        return jsonify(MenuItems=[item.serialize for item in items])
+    except:
+        raise
 
 
 # Routes
