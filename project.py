@@ -27,6 +27,15 @@ def restaurantsJSON():
     except:
         raise
 
+
+@app.route('/restaurants/<int:restaurant_id>/JSON')
+def getRestaurantJSON(restaurant_id):
+    try:
+        restaurant = query_db.get_one(session, Restaurant, restaurant_id)
+        return jsonify(restaurant.serialize)
+    except:
+        raise
+
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
 def restaurantMenuJSON(restaurant_id):
     try:
@@ -40,7 +49,6 @@ def restaurantMenuJSON(restaurant_id):
 def restaurantMenuItemJSON(restaurant_id, menu_id):
     try:
         item = query_db.get_one(session, MenuItem, restaurant_id)
-        print('items: ', item.name)
         return jsonify(item.serialize)
     except:
         raise
