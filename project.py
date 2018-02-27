@@ -19,7 +19,7 @@ session = DBSession()
 
 # API endpoints
 @app.route('/restaurants/JSON')
-def restaurantsJSON():
+def getRestaurantsJSON():
     try:
         restaurants = query_db.get_all(session, Restaurant)
         return jsonify(Restaurants=[restaurant.serialize for restaurant in
@@ -36,8 +36,9 @@ def getRestaurantJSON(restaurant_id):
     except:
         raise
 
+
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
-def restaurantMenuJSON(restaurant_id):
+def getRestaurantMenuJSON(restaurant_id):
     try:
         restaurant = query_db.get_one(session, Restaurant, restaurant_id)
         items = query_db.get_items(session, MenuItem, restaurant_id)
@@ -45,8 +46,9 @@ def restaurantMenuJSON(restaurant_id):
     except:
         raise
 
+
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/JSON')
-def restaurantMenuItemJSON(restaurant_id, menu_id):
+def getRestaurantMenuItemJSON(restaurant_id, menu_id):
     try:
         item = query_db.get_one(session, MenuItem, restaurant_id)
         return jsonify(item.serialize)
