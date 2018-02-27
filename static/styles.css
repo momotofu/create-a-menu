@@ -2,6 +2,16 @@ ul {
   list-style-type: none;
 }
 
+.opacity-0 {
+  opacity: 0;
+}
+
+.image-upload {
+  background: #FAFAFA;
+  min-height: 200px;
+  border-radius: 4px;
+}
+
 .main-content {
   margin-top: 120px;
 }

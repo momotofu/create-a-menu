@@ -33,9 +33,8 @@
       {% endblock %}
     </footer>
   </body>
-  <script src={{ url_for('node_modules/jquery/dist', filename='jquery.min.js') }} />
-  <script type="text/javascript">
-    {% block scripts %}
-    {% endblock %}
-  </script>
+  <script src={{ url_for('static',
+            filename='node_modules/jquery/dist/jquery.min.js') }}></script>
+  {% block scripts %}
+  {% endblock %}
 </html>
