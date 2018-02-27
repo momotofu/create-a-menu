@@ -1,5 +1,8 @@
+import os
+
 from flask import Flask, request, redirect, render_template
-from flask import url_for, flash, jsonify
+from flask import url_for, flash, jsonify, send_from_directory
+from werkzeug.utils import secure_filename
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,7 +12,12 @@ from sqlalchemy.exc import DBAPIError
 from html_builder import HTML_Builder as HB
 import query_db
 
+IMAGE_FOLDER = './static/images'
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'gif'])
+
 app = Flask(__name__)
+app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
@@ -17,6 +25,9 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+def allowed_file(filename):
+    return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # API endpoints
 @app.route('/restaurants/JSON')
@@ -58,6 +69,11 @@ def getRestaurantMenuItemJSON(restaurant_id, menu_id):
 
 
 # Routes
+@app.route('/images/<filename>')
+def image_file(filename):
+    return send_from_directory(app.config['IMAGE_FOLDER'], filename)
+
+
 @app.route('/')
 @app.route('/restaurants')
 def allRestaurants():
@@ -149,6 +165,12 @@ def newMenuItem(restaurant_id):
 
     if request.method == 'POST':
         params = request.form
+        image = request.files['image']
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
+            return redirect(url_for('image_file', filename=filename))
+
         # TODO: form validation
         try:
             item = MenuItem(

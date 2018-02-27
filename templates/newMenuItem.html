@@ -27,7 +27,10 @@
         <h5 class="card-title">Create a new menu item </h5>
         <h6 class="card-subtitle text-muted mb-4">for {{ restaurant.name }}</h6>
         <div class="input-group mb-3">
-          <input type="file" class="form-control" name="file">
+          <div class="col-12 d-none">
+            <img src="..." class="img-fluid" id="image-input" alt="uploaded-image">
+          </div>
+          <input type="file" class="form-control" name="image">
           <div class="input-group-append">
             <span class="input-group-text">
               Image
@@ -71,4 +74,13 @@
     </a>
   </div>
 </div>
+{% endblock %}
+{% block scripts %}
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        document.getElementById('image-input').attr('src',
+        event.target.result);
 {% endblock %}
