@@ -1,6 +1,5 @@
 from flask import Flask, request, redirect, render_template
 from flask import url_for, flash, jsonify
-app = Flask(__name__)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,6 +8,8 @@ from sqlalchemy.exc import DBAPIError
 
 from html_builder import HTML_Builder as HB
 import query_db
+
+app = Flask(__name__)
 
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
