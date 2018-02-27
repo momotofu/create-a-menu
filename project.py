@@ -73,7 +73,6 @@ def getRestaurantMenuItemJSON(restaurant_id, menu_id):
 def image_file(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
 
-
 @app.route('/')
 @app.route('/restaurants')
 def allRestaurants():
