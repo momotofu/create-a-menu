@@ -18,6 +18,15 @@ session = DBSession()
 
 
 # API endpoints
+@app.route('/restaurants/JSON')
+def restaurantsJSON():
+    try:
+        restaurants = query_db.get_all(session, Restaurant)
+        return jsonify(Restaurants=[restaurant.serialize for restaurant in
+            restaurants])
+    except:
+        raise
+
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
 def restaurantMenuJSON(restaurant_id):
     try:
