@@ -8,8 +8,8 @@ ul {
 
 .image-upload {
   background: #FAFAFA;
-  min-height: 200px;
   border-radius: 4px;
+  display: none;
 }
 
 .main-content {

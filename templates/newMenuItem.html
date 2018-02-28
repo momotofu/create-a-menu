@@ -86,6 +86,7 @@
       const reader = new FileReader();
 
       reader.onload = function(event) {
+        $('#image-container').css('display','block');
         $('#image-preview').attr('src', event.target.result).removeClass('opacity-0');
       }
 
