@@ -27,7 +27,7 @@
                             mb-4 mt-2"
                             onclick="window.location='{{
                                      url_for('newMenuItem',
-                                              restaurant_id=restaurant.id) 
+                                              restaurant_id=restaurant.id)
                             }}'">
         create new menu item
       </button>
@@ -37,6 +37,8 @@
     {% for item in menuItems %}
     <div class="col-sm-6 mb-4">
      <div class="card">
+       <img class="card-img-top"
+            src={{ url_for('image_file', filename=item.image) }} alt="" />
       <div class="card-body">
         <h5 class="card-title">{{ item.name }}</h5>
         <h6 class="card-subtitle mb-2 text-muted">{{ item.description }}</h6>

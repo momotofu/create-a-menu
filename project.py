@@ -69,15 +69,18 @@ def getRestaurantMenuItemJSON(restaurant_id, menu_id):
 
 
 # Routes
+@app.route('/images', defaults={'filename': 'filler.jpg'})
 @app.route('/images/<filename>')
 def image_file(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
+
 
 @app.route('/')
 @app.route('/restaurants')
 def allRestaurants():
     restaurants = query_db.get_all(session, Restaurant)
     return render_template('restaurants.html', restaurants=restaurants)
+
 
 @app.route('/restaurants/new/', methods=['GET', 'POST'])
 def newRestaurant():
