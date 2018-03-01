@@ -30,6 +30,7 @@ class MenuItem(Base):
     description = Column(String(250))
     price = Column(String(8))
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
+    image = Column(String(300))
     restaurant = relationship(Restaurant)
 
     @property
