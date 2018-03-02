@@ -167,30 +167,32 @@ def newMenuItem(restaurant_id):
 
     if request.method == 'POST':
         params = request.form
-        image = request.files['image']
+        if 'image' in request.files.keys():
+            image = request.files['image']
+        else:
+            image = None
 
         try:
             if image and allowed_file(image.filename):
                 filename = secure_filename(image.filename)
                 image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
-                item = MenuItem(
-                        name=params['name'],
-                        price=params['price'],
-                        course=params['course'],
-                        description=params['description'],
-                        image=filename,
-                        restaurant=restaurant
-                        )
-                session.add(item)
-                session.commit()
-
-                flash("new menu item created!")
-
-                return redirect(url_for('restaurantMenu',
-                    restaurant_id=restaurant.id))
             else:
-                flash("missing image")
-                return redirect(url_for('allRestaurants'))
+                filename = 'image-filler.jpg'
+            item = MenuItem(
+                    name=params['name'],
+                    price=params['price'],
+                    course=params['course'],
+                    description=params['description'],
+                    image=filename,
+                    restaurant=restaurant
+                    )
+            session.add(item)
+            session.commit()
+
+            flash("new menu item created!")
+
+            return redirect(url_for('restaurantMenu',
+                restaurant_id=restaurant.id))
 
         except:
             session.rollback()

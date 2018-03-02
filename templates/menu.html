@@ -44,7 +44,9 @@
        </div>
       <div class="card-body card-body-menu">
         <h5 class="card-title">{{ item.name }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted card-menu-description">{{ item.description }}</h6>
+        <h6 class="card-subtitle mb-2 text-muted card-menu-description">
+            {{ item.description }}
+        </h6>
         <p class="card-text">{{ item.price }}</p>
         <div class="card-link-container">
           <a class="card-link btn btn-outline-secondary" href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
