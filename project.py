@@ -173,7 +173,6 @@ def newMenuItem(restaurant_id):
             if image and allowed_file(image.filename):
                 filename = secure_filename(image.filename)
                 image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
-                # return redirect(url_for('image_file', filename=filename))
                 item = MenuItem(
                         name=params['name'],
                         price=params['price'],
@@ -205,7 +204,6 @@ def newMenuItem(restaurant_id):
     methods=['GET','POST']
     )
 def editMenuItem(restaurant_id, menu_id):
-    print('requested')
     try:
         restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
         menuItem = session.query(MenuItem).filter_by(id = menu_id).one()
@@ -213,7 +211,6 @@ def editMenuItem(restaurant_id, menu_id):
         raise
         return
 
-    print('continued')
     if request.method == 'GET':
         return render_template('editMenuItem.html', restaurant=restaurant,
                 item=menuItem)
@@ -229,6 +226,10 @@ def editMenuItem(restaurant_id, menu_id):
                 menuItem.description = params['description']
             if menuItem.course != params['course']:
                 menuItem.course = params['course']
+            if image and allowed_file(image.filename):
+                filename = secure_filename(image.filename)
+                image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
+                menuItem.image = filename
 
             session.add(menuItem)
             session.commit()
@@ -237,11 +238,8 @@ def editMenuItem(restaurant_id, menu_id):
 
             return redirect(url_for("restaurantMenu",
                 restaurant_id=restaurant.id))
-        except DBAPIError or BaseException:
-            print('error')
+        except:
             session.rollback()
-            print('error: ', DBAPIError)
-            # raise
             return render_template('editMenuItemFailed.html',
                     restaurant=restaurant, item=menuItem)
 
