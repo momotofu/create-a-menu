@@ -20,10 +20,6 @@ ul {
   min-height: 260px;
 }
 
-.card {
-  min-height: 260px;
-}
-
 .menu-item-image {
   min-height: 260px;
   background-position: center;
@@ -40,12 +36,34 @@ ul {
   bottom: 1.5rem;
 }
 
-.card-body {
+.card-menu {
+  min-height: 260px;
+}
+
+.card-menu-description {
+  height: 96px;
+  overflow: scroll;
+}
+
+.card-body-menu {
   padding-bottom: 4rem;
 }
 
 .card-body-form {
   padding-bottom: 1.5rem;
+}
+
+.nav-link:hover {
+  opacity: 0.8;
+}
+
+.nav-link:active {
+  opacity: 0.5;
+}
+
+.navbar {
+  height: 56px;
+  background-color: #4CAF50 !important;
 }
 
 @media (min-width: 1200px) {

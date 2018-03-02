@@ -6,11 +6,7 @@
   {% endblock %}
 {% endblock %}
 {% block nav %}
-  <li class="nav-item">
-    <a class="nav-link" href={{ url_for('allRestaurants') }}>
-      all restaurants
-    </a>
-  </li>
+  {{ super() }}
   <li class="nav-item active">
     <a class="nav-link" href={{ url_for('restaurantMenu',
       restaurant_id=restaurant.id) }}>
@@ -25,13 +21,14 @@
       <form class="card-body card-body-form"
             enctype="multipart/form-data"
             action={{ url_for('editMenuItem', restaurant_id=restaurant.id, menu_id=item.id) }} 
-            method="POST">
+            method="POST"
+            id="form">
         <h5 class="card-title">Edit {{ item.name }} </h5>
         <h6 class="card-subtitle text-muted mb-4">for {{ restaurant.name }}</h6>
         <div class="input-group mb-3">
-          <div class="col-12 mb-3 image-upload" id="image-container">
-            <img src="..."
-              class="opacity-0 img-fluid"
+          <div class="col-12 mb-3"  id="image-container">
+            <img src={{ url_for('image_file', filename=item.image) }}
+              class="img-fluid"
               style="border-radius: 4px"
               id="image-preview"
               alt="uploaded-image">
@@ -74,8 +71,11 @@
             </span>
           </div>
         </div>
-        <input class="btn btn-primary btn-lg btn-block" type="submit"
-        value="UPDATE">
+        <button class="btn btn-primary btn-lg btn-block"
+                onclick="submitForm();"
+                >
+          UPDATE
+        </button>
       </form>
     </div>
     <a class="btn btn-outline-secondary btn-lg btn-block" href={{ url_for('restaurantMenu',
@@ -87,6 +87,10 @@
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
+  function submitForm(event) {
+    $('#form').submit();
+  }
+
   function readURL(input) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
