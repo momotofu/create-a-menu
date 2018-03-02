@@ -24,6 +24,13 @@ ul {
   min-height: 260px;
 }
 
+.menu-item-image {
+  min-height: 260px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .card-form {
   min-height: 0;
 }
