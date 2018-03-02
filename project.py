@@ -217,6 +217,7 @@ def editMenuItem(restaurant_id, menu_id):
 
     if request.method == 'POST':
         params = request.form
+        image = request.files['image']
         try:
             if menuItem.name != params['name']:
                 menuItem.name = params['name']
@@ -240,6 +241,7 @@ def editMenuItem(restaurant_id, menu_id):
                 restaurant_id=restaurant.id))
         except:
             session.rollback()
+            raise
             return render_template('editMenuItemFailed.html',
                     restaurant=restaurant, item=menuItem)
 

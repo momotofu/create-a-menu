@@ -22,10 +22,27 @@
 <div class="row justify-content-center">
   <div class="col-lg-6">
     <div class="card card-form mb-4">
-      <form class="card-body card-body-form" action={{ url_for('editMenuItem', restaurant_id=restaurant.id,
-      menu_id=item.id) }} method="POST">
+      <form class="card-body card-body-form"
+            enctype="multipart/form-data"
+            action={{ url_for('editMenuItem', restaurant_id=restaurant.id, menu_id=item.id) }} 
+            method="POST">
         <h5 class="card-title">Edit {{ item.name }} </h5>
         <h6 class="card-subtitle text-muted mb-4">for {{ restaurant.name }}</h6>
+        <div class="input-group mb-3">
+          <div class="col-12 mb-3 image-upload" id="image-container">
+            <img src="..."
+              class="opacity-0 img-fluid"
+              style="border-radius: 4px"
+              id="image-preview"
+              alt="uploaded-image">
+          </div>
+          <input type="file" class="form-control" id="image-input" name="image">
+          <div class="input-group-append">
+            <span class="input-group-text">
+              Image
+            </span>
+          </div>
+        </div>
         <div class="input-group mb-3">
           <input type="text" class="form-control" name="name" value="{{
           item.name }}">
@@ -67,4 +84,24 @@
     </a>
   </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        $('#image-container').css('display','block');
+        $('#image-preview').attr('src', event.target.result).removeClass('opacity-0');
+      }
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  $('#image-input').change(function() {
+    readURL(this);
+  });
+</script>
 {% endblock %}
