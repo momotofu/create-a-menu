@@ -61,3 +61,10 @@
   </div>
 </section>
 {% endblock %}
+{% block scripts %}
+  <script type='text/javascript'>
+    $('.btn').click(function(evt) {
+      evt.stopPropagation();
+    });
+  </script>
+{% endblock %}
