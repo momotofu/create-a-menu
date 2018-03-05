@@ -4,22 +4,24 @@
   {% block title %}
     login
   {% endblock %}
+  <script src="https://apis.google.com/js/client:platform.js?onload=start"
+          async defer></script>
 {% endblock %}
 {% block mainContent %}
 <div class="row justify-content-center">
   <div class="col-lg-4">
-    <div class="card">
+    <div class="card" id="signin-card">
       <div class="card-body">
         <h5 class="card-title text-center mb-4">Sign in</h5>
-        <div id="signinButton" class="d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
            <span
              class="g-signin"
-             data-scope="openid"
+             data-scope="openid email"
              data-clientid="310679287808-9lgk4m41er20fdfhe49q23rjennhtta2.apps.googleusercontent.com"
              data-redirecturi="postmessage"
              data-accesstype="offline"
              data-cookiepolicy="single_host_origin"
-             data-callback="signInCallBack"
+             data-callback="signInCallback"
              data-approvalprompt="force">
            </span>
          </div>
@@ -30,6 +32,32 @@
 </div>
 {% endblock %}
 {% block scripts %}
-  <script src="https://apis.google.com/js/client:platform.js?onload=start"
-          async defer></script>
+  <script type="text/javascript">
+    function signInCallback(authResult) {
+      if (authResult['code']) {
+        $('signin-card').attr('style', 'display: none');
+        $.ajax({
+          type: 'POST',
+          url: '/gconnect?state={{ state }}',
+          processData: false,
+          contentType: 'application/octet-stream; charset=utf-8',
+          data: authResult['code'],
+          success: function(result) {
+            if (result) {
+              $('#result').html('Login Successful! </br>' + result +
+                '</br>Redirecting...')
+              setTimeout(function() {
+                window.location.href = "/restaurant"
+              }, 4000);
+            } else if (authResult['error']) {
+              console.log('There was an error: ' + authResult['error'])
+            }
+          }
+         })
+      } else {
+        $('#result').html('Failed to make a server-side cal. Check your configuration and console.')
+      }
+    }
+  </script>
+
 {% endblock %}
