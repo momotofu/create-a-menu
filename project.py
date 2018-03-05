@@ -86,16 +86,19 @@ def getRestaurantMenuItemJSON(restaurant_id, menu_id):
 
 
 # Routes
+# Assets
 @app.route('/images', defaults={'filename': 'filler.jpg'})
 @app.route('/images/<filename>')
 def image_file(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
 
 
-# Create a state token to prevent request forgery
-# Store it in the session for later validation
 @app.route('/login')
 def showLogin():
+    """
+    Create a state token to prevent request forgery
+    and store it in the session for later validation
+    """
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x
             in range(32))
     login_session['state'] = state
