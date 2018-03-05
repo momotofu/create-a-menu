@@ -8,6 +8,14 @@ from werkzeug.utils import secure_filename
 from flask import session as login_session
 import random, string
 
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+from flask import make_response
+
+import httplib2
+import json
+import requests
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
