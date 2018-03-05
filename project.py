@@ -4,6 +4,10 @@ from flask import Flask, request, redirect, render_template
 from flask import url_for, flash, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 
+# session token creation
+from flask import session as login_session
+import random, string
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
@@ -74,6 +78,15 @@ def getRestaurantMenuItemJSON(restaurant_id, menu_id):
 def image_file(filename):
     return send_from_directory(app.config['IMAGE_FOLDER'], filename)
 
+
+# Create a state token to prevent request forgery
+# Store it in the session for later validation
+@app.route('/login')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x
+            in range(32))
+    login_session['state'] = state
+    return "The current session state is %s" % login_session['state']
 
 @app.route('/')
 @app.route('/restaurants')
