@@ -24,6 +24,11 @@ from sqlalchemy.exc import DBAPIError
 from html_builder import HTML_Builder as HB
 import query_db
 
+#OAuth
+CLIENT_ID = json.loads(open('./client_secrets.json',
+    'r').read())['web']['client_id']
+
+# Assets
 IMAGE_FOLDER = './static/images'
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'gif'])
 
