@@ -1,5 +1,19 @@
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  overflow: auto;
+  height: 100%;
+}
+
 ul {
   list-style-type: none;
+}
+
+.box-shadow {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, .05);
 }
 
 .opacity-0 {
@@ -41,12 +55,8 @@ ul {
 }
 
 .card-menu-description {
-  height: 60px;
+  height: 75px;
   overflow: scroll;
-}
-
-.card-body-menu {
-  padding-bottom: 4rem;
 }
 
 .card-body-form {

@@ -5,61 +5,65 @@
     Your restaurants
   {% endblock %}
 {% endblock %}
-{% block mainContent %}
-<section class="row">
-  <div class="col-12 mb-3">
-    <h1>Your restaurants</h1>
-  </div>
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul>
-  {% for message in messages %}
-    <li class="alert alert-success"><strong>{{message}}</strong></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
-</section>
-<section class="row">
-  <div class="col-lg-5">
-    <button type="button" class="btn btn-outline-primary btn-lg btn-block mb-4 mt-2"
-                          onclick="window.location='{{ url_for('newRestaurant') }}'">
-      create new restaurant
-    </button>
-  </div>
-</section>
-<section class="row">
-  <div class="col-lg-12">
-    <div class="list-group">
-      {% for restaurant in restaurants %}
-      <div class="list-group-item list-group-item-action"
-           onclick="window.location='{{ url_for('restaurantMenu',
-           restaurant_id=restaurant.id) }}'">
-        <span class="list-title">
-          {{ restaurant.name }}
-        </span>
-        <button
-          class="btn btn-outline-secondary btn-sm float-right"
-          onclick="window.location='{{ url_for('deleteRestaurant',
-          restaurant_id=restaurant.id)}}'">
-            delete
-        </button>
-        <button
-          class="btn btn-outline-secondary btn-sm float-right mr-3"
-          onclick="window.location='{{ url_for('editRestaurant',
-          restaurant_id=restaurant.id) }}'">
-            edit
-        </button>
-        <button class="btn btn-outline-primary btn-sm float-right mr-3"
-              onclick="window.location='{{ url_for('restaurantMenu',
-        restaurant_id=restaurant.id) }}'">
-          menu
+{% block mainContainer %}
+  <section class="jumbotron text-center">
+    <div class="col-12 mb-3">
+      <h1>Your restaurants</h1>
+    </div>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+    {% for message in messages %}
+      <li class="alert alert-success"><strong>{{message}}</strong></li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+  </section>
+  {{ super() }}
+  {% block mainContent %}
+    <section class="row">
+      <div class="col-lg-5">
+        <button type="button"
+                class="btn btn-outline-primary btn-lg btn-block mb-4 mt-2"
+                onclick="window.location='{{ url_for('newRestaurant') }}'">
+          create new restaurant
         </button>
       </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
+    </section>
+    <section class="row">
+      <div class="col-lg-12">
+        <div class="list-group">
+          {% for restaurant in restaurants %}
+          <div class="list-group-item list-group-item-action"
+               onclick="window.location='{{ url_for('restaurantMenu',
+               restaurant_id=restaurant.id) }}'">
+            <span class="list-title">
+              {{ restaurant.name }}
+            </span>
+            <button
+              class="btn btn-outline-secondary btn-sm float-right"
+              onclick="window.location='{{ url_for('deleteRestaurant',
+              restaurant_id=restaurant.id)}}'">
+                delete
+            </button>
+            <button
+              class="btn btn-outline-secondary btn-sm float-right mr-3"
+              onclick="window.location='{{ url_for('editRestaurant',
+              restaurant_id=restaurant.id) }}'">
+                edit
+            </button>
+            <button class="btn btn-outline-primary btn-sm float-right mr-3"
+                  onclick="window.location='{{ url_for('restaurantMenu',
+            restaurant_id=restaurant.id) }}'">
+              menu
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endblock %}
 {% endblock %}
 {% block scripts %}
   <script type='text/javascript'>

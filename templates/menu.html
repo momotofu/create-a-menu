@@ -36,7 +36,7 @@
   <div class="row">
     {% for item in menuItems %}
     <div class="col-sm-6 mb-4">
-     <div class="card card-menu">
+     <div class="card card-menu box-shadow">
        <div class="card-img-top menu-item-image"
             style="background-image:url({{ url_for('image_file',
                   filename=item.image) }}); min-height:260px;"
@@ -44,19 +44,21 @@
        </div>
       <div class="card-body card-body-menu">
         <h5 class="card-title">{{ item.name }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted card-menu-description">
+        <p class="card-text mb-3 card-menu-description">
             {{ item.description }}
-        </h6>
-        <p class="card-text">{{ item.price }}</p>
-        <div class="card-link-container">
-          <a class="card-link btn btn-outline-secondary" href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
-            menu_id=item.id) }}>
-            edit
-          </a>
-          <a class="card-link btn btn-outline-secondary" href={{ url_for('deleteMenuItem', restaurant_id=restaurant.id,
-            menu_id=item.id) }}>
-            delete
-          </a>
+        </p>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="btn-group">
+            <a class="card-link btn btn-outline-secondary" href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
+              menu_id=item.id) }}>
+              edit
+            </a>
+            <a class="card-link btn btn-outline-secondary" href={{ url_for('deleteMenuItem', restaurant_id=restaurant.id,
+              menu_id=item.id) }}>
+              delete
+            </a>
+          </div>
+          <span class="">{{ item.price }}</span>
         </div>
       </div>
      </div>

@@ -24,10 +24,12 @@
         {% endblock %}
       </ul>
     </nav>
-    <div class="container main-content">
-      {% block mainContent %}
-      {% endblock %}
-    </div>
+    {% block mainContainer %}
+      <div class="container main-content">
+        {% block mainContent %}
+        {% endblock %}
+      </div>
+    {% endblock %}
     <footer class="container footer">
       {% block footer %}
       {% endblock %}
