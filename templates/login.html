@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% block title %}
+    login
+  {% endblock %}
+{% endblock %}
+{% block mainContent %}
+<div class="row justify-content-center">
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title text-center mb-4">Sign in</h5>
+        <div id="signinButton" class="d-flex justify-content-center">
+           <span
+             class="g-signin"
+             data-scope="openid"
+             data-clientid="310679287808-9lgk4m41er20fdfhe49q23rjennhtta2.apps.googleusercontent.com"
+             data-redirecturi="postmessage"
+             data-accesstype="offline"
+             data-cookiepolicy="single_host_origin"
+             data-callback="signInCallBack"
+             data-approvalprompt="force">
+           </span>
+         </div>
+      </div>
+     <div id="result"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+  <script src="https://apis.google.com/js/client:platform.js?onload=start"
+          async defer></script>
+{% endblock %}
