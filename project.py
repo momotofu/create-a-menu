@@ -147,7 +147,7 @@ def gconnect():
         return response
 
     # Store the access token in the session for later use.
-    login_session['credentials'] = access_token
+    login_session['access_token'] = access_token
     login_session['gplus_id'] = gplus_id
 
     # Get user info
@@ -168,6 +168,35 @@ def gconnect():
         )
     flash("You are now logged in as %s" % login_session['username'])
     return output.get_html()
+
+# revoke user token and rest login_session
+@app.route('/gdisconnect')
+def gdisconnect():
+    access_token = login_session.get('access_token')
+    if access_token is None:
+        response = make_response(
+            json.dumps('Current user not connected.'), 401)
+        response.headers['content-type'] = 'application/json'
+        return response
+
+    # send HTTP GET request to revoke current token.
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    if result['status'] == '200':
+        # Reset user session
+        del login_session['access_token']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+
+        response = make_respons(json.dumps('Successfully disconnected.'), 200)
+        response.headers['content-type'] = 'application/json'
+        return response
+
+
 
 
 @app.route('/login')
