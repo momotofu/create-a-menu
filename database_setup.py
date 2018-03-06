@@ -12,6 +12,8 @@ class Restaurant(Base):
 
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
+    user_id = Column(Integer, ForeignKey('user.id')
+    user = relationship(User)
 
     @property
     def serialize(self):
@@ -19,7 +21,26 @@ class Restaurant(Base):
         return {
             'name' : self.name,
             'id' : self.id
-            }
+        }
+
+
+class User(Base):
+    __tablename__ = 'user'
+
+    id = Column('id', Integer, primary_key=True)
+    name = Column('name', String(80), nullable=False)
+    picture = Column('picture', String(80), nullable=False)
+    email = Column('email', String(80))
+
+    @property
+    def serialize(self):
+        return {
+            'id' : self.id,
+            'name': self.name,
+            'picture': self.picture,
+            'email': self.email
+        }
+
 
 class MenuItem(Base):
     __tablename__ = 'menu_item'
@@ -30,8 +51,10 @@ class MenuItem(Base):
     description = Column(String(250))
     price = Column(String(8))
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
+    user_id = Column(Integer, ForeignKey('user.id')
     image = Column(String(300))
     restaurant = relationship(Restaurant)
+    user = relationship(User)
 
     @property
     def serialize(self):
