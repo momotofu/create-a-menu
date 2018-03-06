@@ -18,7 +18,7 @@ import requests
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Restaurant, MenuItem, User
 from sqlalchemy.exc import DBAPIError
 
 from html_builder import HTML_Builder as HB
@@ -45,6 +45,34 @@ session = DBSession()
 def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id = user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email = email).one()
+        return user.id
+    except:
+        return None
+
+
+def createUser(login_session):
+    newUser = User(name = login_session['username'],
+                    email = login_session['email'],
+                    picture = login_session['picture'])
+    try:
+        session.add(newUser)
+        session.commit()
+        user = session.query(User).filter_by(email=login_session['email']).one()
+        return user.id
+    except:
+        raise
+
+
 
 # API endpoints
 @app.route('/restaurants/JSON')
@@ -116,7 +144,7 @@ def gconnect():
             access_token)
     # create a GET request using OAuth token
     h = httplib2.Http()
-    result = json.loads(h.request(url, 'GET')[1])
+    result = json.loads(h.request(url, 'GET')[1].decode())
 
     if result.get('error') is not None:
         response = make_response(json.dumps(result.get('error')), 500)
@@ -159,6 +187,12 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+
+    # Check if user already exits
+    if getUserID(login_session['email']) is None:
+        login_session['user_id'] = createUser(login_session)
+    else:
+        login_session['user_id'] = getUserID(login_session['email'])
 
     output = HB()
     output.add_html("""
@@ -224,7 +258,8 @@ def newRestaurant():
     if request.method == 'POST':
         params = request.form
         if 'name' in params.keys():
-           restaurant = Restaurant(name=params['name'])
+           restaurant = Restaurant(name=params['name'],
+                                   user_id=login_session['user-id'])
            try:
                 query_db.update(session, restaurant)
                 session.commit()
@@ -328,7 +363,7 @@ def newMenuItem(restaurant_id):
                     course=params['course'],
                     description=params['description'],
                     image=filename,
-                    restaurant=restaurant
+                    user_id=login_session['user-id']
                     )
             session.add(item)
             session.commit()
