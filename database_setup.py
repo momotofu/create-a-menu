@@ -43,8 +43,6 @@ class Restaurant(Base):
         }
 
 
-
-
 class MenuItem(Base):
     __tablename__ = 'menu_item'
 
@@ -54,9 +52,9 @@ class MenuItem(Base):
     description = Column(String(250))
     price = Column(String(8))
     restaurant_id = Column(Integer, ForeignKey('restaurant.id'))
-    user_id = Column(Integer, ForeignKey('user.id'))
     image = Column(String(300))
     restaurant = relationship(Restaurant)
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
     @property
