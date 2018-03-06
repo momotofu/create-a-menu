@@ -24,12 +24,12 @@
         {% endblock %}
       </ul>
     </nav>
-    {% block mainContainer %}
-      <div class="container main-content">
-        {% block mainContent %}
-        {% endblock %}
-      </div>
+    {% block hero %}
     {% endblock %}
+    <div class="container main-content">
+      {% block mainContent %}
+      {% endblock %}
+    </div>
     <footer class="container footer">
       {% block footer %}
       {% endblock %}
