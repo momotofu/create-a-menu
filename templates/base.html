@@ -13,16 +13,19 @@
   </head>
   <body class="bg-light">
     <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark
-      text-light">
-      <ul class="navbar-nav">
-        {% block nav %}
-        <li class="nav-item active">
-          <a class="nav-link mr-2" href={{ url_for('allRestaurants') }}>
-            <i class="fab fa-fort-awesome fa-lg"></i>
-          </a>
-        </li>
-        {% endblock %}
-      </ul>
+      text-light justify-content-between">
+      {% block nav %}
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link mr-2" href={{ url_for('allRestaurants') }}>
+              <i class="fab fa-fort-awesome fa-lg"></i>
+            </a>
+          </li>
+        </ul>
+        <a class="btn btn-outline-light" href={{ url_for('login') }}>
+          <strong>sign in</strong>
+        </a>
+      {% endblock %}
     </nav>
     {% block hero %}
     {% endblock %}
