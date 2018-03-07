@@ -225,7 +225,13 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        del login_session['access_token']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        response = make_response(json.dumps("""Failed to revoke token for given
+            user. Logging out anyway""", 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -245,6 +251,9 @@ def login():
 @app.route('/restaurants')
 def allRestaurants():
     restaurants = query_db.get_all(session, Restaurant)
+    if 'username' not in login_session:
+        return render_template('publicRestaurants.html',
+                restaurants=restaurants)
     return render_template('restaurants.html', restaurants=restaurants)
 
 

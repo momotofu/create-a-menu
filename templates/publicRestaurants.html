@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+  {% block title %}
+    Your restaurants
+  {% endblock %}
+{% endblock %}
+{% block hero %}
+  <section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="jumbotron-heading">Your restaurants</h1>
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <ul>
+      {% for message in messages %}
+        <li class="alert alert-success"><strong>{{message}}</strong></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% endwith %}
+    </div>
+  </section>
+{% endblock %}
+{% block mainContent %}
+<section class="row">
+  <div class="col-lg-5">
+    <button type="button" class="btn btn-outline-primary btn-lg btn-block mb-4 mt-2"
+                          onclick="window.location='{{ url_for('newRestaurant') }}'">
+      create new restaurant
+    </button>
+  </div>
+</section>
+<section class="row">
+  <div class="col-lg-12">
+    <div class="list-group">
+      {% for restaurant in restaurants %}
+      <div class="list-group-item list-group-item-action"
+           onclick="window.location='{{ url_for('restaurantMenu',
+           restaurant_id=restaurant.id) }}'">
+        <span class="list-title">
+          {{ restaurant.name }}
+        </span>
+        <button class="btn btn-outline-primary btn-sm float-right mr-3"
+              onclick="window.location='{{ url_for('restaurantMenu',
+        restaurant_id=restaurant.id) }}'">
+          menu
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+  <script type='text/javascript'>
+    $('.btn').click(function(evt) {
+      evt.stopPropagation();
+    });
+  </script>
+{% endblock %}
