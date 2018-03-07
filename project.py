@@ -341,6 +341,9 @@ def deleteRestaurant(restaurant_id):
 def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id)
+    if 'username' not in login_session:
+        return render_template('publicmenu.html', restaurant=restaurant,
+                menuItems=items)
     return render_template('menu.html', restaurant=restaurant, menuItems=items)
 
 

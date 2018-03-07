@@ -22,15 +22,6 @@
 </section>
 <section class="justify-content-center">
   <div class="row">
-    <div class="col-lg-5">
-      <button type="button"
-              class="btn btn-outline-primary btn-lg btn-block mb-4 mt-2"
-              onclick="window.location='{{ url_for('newMenuItem', restaurant_id=restaurant.id) }}'">
-        create new menu item
-      </button>
-    </div>
-  </div>
-  <div class="row">
     {% for item in menuItems %}
     <div class="col-sm-6 mb-4">
      <div class="card card-menu box-shadow">
@@ -44,22 +35,10 @@
         <p class="card-text mb-3 card-menu-description">
             {{ item.description }}
         </p>
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="btn-group">
-            <a class="card-link btn btn-outline-secondary" href={{ url_for('editMenuItem', restaurant_id=restaurant.id,
-              menu_id=item.id) }}>
-              edit
-            </a>
-            <a class="card-link btn btn-outline-secondary" href={{ url_for('deleteMenuItem', restaurant_id=restaurant.id,
-              menu_id=item.id) }}>
-              delete
-            </a>
-          </div>
-          <span class="">{{ item.price }}</span>
+        <span class="">{{ item.price }}</span>
         </div>
       </div>
      </div>
-    </div>
     {% endfor %}
   </div>
 </section>
