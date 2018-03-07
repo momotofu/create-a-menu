@@ -50,9 +50,24 @@
     <div class="card" id="signin-card">
       <div class="card-body">
         <h5 class="card-title text-center mb-4">Sign in</h5>
-        <div class="d-flex justify-content-center">
-           <span
+        <div class="justify-content-center text-center">
+          <fb:login-button
+            scope="public_profile,email"
+            onlogin="sendFBTokenToServer();"
+            class="fb-login-button"
+            data-max-rows="1"
+            data-size="medium"
+            data-button-type="continue_with"
+            data-show-faces="false"
+            data-auto-logout-link="false"
+            data-use-continue-as="false">
+          </fb:login-button>
+          <div class="mb-3"></div>
+           <div
              class="g-signin"
+             data-width="300"
+             data-height="200"
+             data-longtitle="true"
              data-scope="openid email"
              data-clientid="310679287808-9lgk4m41er20fdfhe49q23rjennhtta2.apps.googleusercontent.com"
              data-redirecturi="postmessage"
@@ -60,18 +75,7 @@
              data-cookiepolicy="single_host_origin"
              data-callback="signInCallback"
              data-approvalprompt="force">
-           </span>
-          <fb:login-button
-            scope="public_profile,email"
-            onlogin="sendFBTokenToServer();"
-            class="fb-login-button"
-            data-max-rows="1"
-            data-size="large"
-            data-button-type="continue_with"
-            data-show-faces="false"
-            data-auto-logout-link="false"
-            data-use-continue-as="false">
-          </fb:login-button>
+           </div>
          </div>
       </div>
      <div id="result"></div>
