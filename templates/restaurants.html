@@ -35,7 +35,7 @@
     <div class="list-group">
       {% for restaurant in restaurants %}
       <div class="list-group-item list-group-item-action
-           justify-content-between d-flex"
+           justify-content-between d-flex restaurant-list-container"
            onclick="window.location='{{ url_for('restaurantMenu',
            restaurant_id=restaurant.id) }}'">
         <span class="list-title">
