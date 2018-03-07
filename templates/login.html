@@ -7,6 +7,43 @@
   <script src="https://apis.google.com/js/client:platform.js?onload=start"
           async defer></script>
 {% endblock %}
+{% block fb_code %}
+  <div id="fb-root"></div>
+  <script>
+    (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12&appId=576457192702211&autoLogAppEvents=1';
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  function sendFBTokenToServer() {
+    var access_token = FB.getAuthResponse()['accessToken']
+    console.log('retrieved access token: ', access_token)
+    FB.api('/me', function(response) {
+      console.log('Successful login for: ' + response.name)
+      $.ajax({
+        type: 'POST',
+        url: '/fbconnect?state={{state}}',
+        processData: false,
+        data: access_token,
+        contentType: 'application/octet-stream; charset=utf-8',
+        success: function(result) {
+          if (result) {
+            $('#result').html('Login Successful!</br>' + result + '</br> Redirecting...')
+            setTimeout(function() {
+              window.location.href = "/restaurant"
+            }, 4000)
+          } else {
+            $('#result').html('Failed to make a server-side call.')
+          }
+        }
+      })
+    })
+  }
+  </script>
+{% endblock %}
 {% block mainContent %}
 <div class="row justify-content-center">
   <div class="col-lg-4">
@@ -24,6 +61,17 @@
              data-callback="signInCallback"
              data-approvalprompt="force">
            </span>
+          <fb:login-button
+            scope="public_profile,email"
+            onlogin="sendFBTokenToServer();"
+            class="fb-login-button"
+            data-max-rows="1"
+            data-size="large"
+            data-button-type="continue_with"
+            data-show-faces="false"
+            data-auto-logout-link="false"
+            data-use-continue-as="false">
+          </fb:login-button>
          </div>
       </div>
      <div id="result"></div>
@@ -33,6 +81,7 @@
 {% endblock %}
 {% block scripts %}
   <script type="text/javascript">
+
     function signInCallback(authResult) {
       if (authResult['code']) {
         $('signin-card').attr('style', 'display: none');
