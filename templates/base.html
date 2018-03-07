@@ -24,9 +24,16 @@
             </a>
           </li>
         </ul>
+        {% if 'username' not in session %}
         <a class="btn btn-outline-light" href={{ url_for('login') }}>
           <strong>sign in</strong>
         </a>
+        {% else %}
+          <a class="btn btn-outline-light" href={{ url_for('disconnect') }}>
+            <strong>logout</strong>
+          </a>
+        {% endif %}
+
       {% endblock %}
     </nav>
     {% block hero %}

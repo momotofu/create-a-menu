@@ -20,7 +20,6 @@
 
   function sendFBTokenToServer() {
     var access_token = FB.getAuthResponse()['accessToken']
-    console.log('retrieved access token: ', access_token)
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name)
       $.ajax({
