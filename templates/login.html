@@ -22,6 +22,8 @@
     var access_token = FB.getAuthResponse()['accessToken']
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name)
+      console.log('responese: ', response)
+      console.log('access token: ', access_token)
       $.ajax({
         type: 'POST',
         url: '/fbconnect?state={{state}}',
