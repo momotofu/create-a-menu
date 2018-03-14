@@ -22,8 +22,6 @@
     var access_token = FB.getAuthResponse()['accessToken']
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name)
-      console.log('responese: ', response)
-      console.log('access token: ', access_token)
       $.ajax({
         type: 'POST',
         url: '/fbconnect?state={{state}}',
@@ -34,7 +32,7 @@
           if (result) {
             $('#result').html('Login Successful!</br>' + result + '</br> Redirecting...')
             setTimeout(function() {
-              window.location.href = "/restaurant"
+              window.location.href = "/restaurants"
             }, 4000)
           } else {
             $('#result').html('Failed to make a server-side call.')

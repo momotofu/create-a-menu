@@ -127,16 +127,12 @@ def fbconnect():
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    access_token = request.data
-    print('INITIAL ACCESS_TOKEN: ', access_token)
-
+    short_lived_token = request.data.decode()
     app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
-    print('REQUEST URL: ', url)
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, short_lived_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode()
 
@@ -144,10 +140,11 @@ def fbconnect():
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.12/me"
     print('RESULT: ', result)
-    token = result.split(',')[0].split(':')[1].replace('"', '')
-    print('TOKEN: ', token)
+    long_lived_token = result.split(',')[0].split(':')[1].replace('"', '')
+    print('LONG_LIVED_TOKEN: ', long_lived_token)
 
-    url = '%s?access_token=%s&fields=name,id,email' % (userinfo_url, token)
+    url = '%s?access_token=%s&fields=name,id,email' % (userinfo_url,
+            long_lived_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode()
     # print "url sent for API access:%s"% url
@@ -159,16 +156,15 @@ def fbconnect():
     login_session['facebook_id'] = data['id']
 
     # The token must be stored in the login_session in order to properly logout
-    login_session['access_token'] = token
+    login_session['access_token'] = long_lived_token
 
     print('HERE')
 
     # Get user picture
-    url = 'https://graph.facebook.com/v2.12/me/picture?access_token=%s&redirect=0&height=200&width=200' % token
+    url = 'https://graph.facebook.com/v2.12/me/picture?access_token=%s&redirect=0&height=200&width=200' % long_lived_token
     h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
+    result = h.request(url, 'GET')[1].decode()
     data = json.loads(result)
-    print('DATA: ', data)
 
     login_session['picture'] = data["data"]["url"]
 
@@ -178,17 +174,14 @@ def fbconnect():
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-
-    flash("Now logged in as %s" % login_session['username'])
-    return output
+    output = HB()
+    output.add_html("""
+        <h1>Welcome %s</h1>
+        <img src=%s style="width: 300px; height: 300px; border-radius: 150px"/>
+        """ % (login_session['username'], login_session['picture'])
+        )
+    flash("You are now logged in as %s" % login_session['username'])
+    return output.get_html()
 
 
 @app.route('/fbdisconnect')
