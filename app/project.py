@@ -22,12 +22,16 @@ import requests
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from model import Base, Restaurant, MenuItem, User
+from database_setup import Base, Restaurant, MenuItem, User
 from sqlalchemy.exc import DBAPIError
 
 from html_builder import HTML_Builder as HB
 import query_db
 
+
+#OAuth
+CLIENT_ID = json.loads(open('./client_secrets.json',
+    'r').read())['web']['client_id']
 
 # Assets
 IMAGE_FOLDER = './static/images'
@@ -39,6 +43,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
+
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -137,14 +142,19 @@ def fbconnect():
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode()
 
+
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.12/me"
+    print('RESULT: ', result)
     long_lived_token = result.split(',')[0].split(':')[1].replace('"', '')
+    print('LONG_LIVED_TOKEN: ', long_lived_token)
 
     url = '%s?access_token=%s&fields=name,id,email' % (userinfo_url,
             long_lived_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode()
+    # print "url sent for API access:%s"% url
+    # print "API JSON result: %s" % result
     data = json.loads(result)
     login_session['provider'] = 'facebook'
     login_session['username'] = data['name']
@@ -153,6 +163,8 @@ def fbconnect():
 
     # The token must be stored in the login_session in order to properly logout
     login_session['access_token'] = long_lived_token
+
+    print('HERE')
 
     # Get user picture
     url = 'https://graph.facebook.com/v2.12/me/picture?access_token=%s&redirect=0&height=200&width=200' % long_lived_token
@@ -201,7 +213,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('./credentials/google_client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -231,9 +243,7 @@ def gconnect():
         return response
 
     # Verify that the access token is valid for this app.
-    client_id = json.loads(open('./credentials/config.json','r').read())['oauth']['google']['client_id']
-
-    if result['issued_to'] != client_id:
+    if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
         response.headers['Content-Type'] = 'application/json'
