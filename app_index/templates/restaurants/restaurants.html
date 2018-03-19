@@ -25,7 +25,7 @@
 <section class="row">
   <div class="col-lg-5">
     <button type="button" class="btn btn-outline-primary btn-lg btn-block mb-4 mt-2"
-                          onclick="window.location='{{ url_for('newRestaurant') }}'">
+                          onclick="window.location='{{ url_for('restaurants.newRestaurant') }}'">
       create new restaurant
     </button>
   </div>
@@ -36,26 +36,26 @@
       {% for restaurant in restaurants %}
       <div class="list-group-item list-group-item-action
            justify-content-between d-flex restaurant-list-container"
-           onclick="window.location='{{ url_for('restaurantMenu',
+           onclick="window.location='{{ url_for('restaurants.restaurantMenu',
            restaurant_id=restaurant.id) }}'">
         <span class="list-title">
           {{ restaurant.name }}
         </span>
         <div class="btn-group">
           <button class="btn btn-outline-secondary btn-sm"
-                onclick="window.location='{{ url_for('restaurantMenu',
+                onclick="window.location='{{ url_for('restaurant.restaurantMenu',
           restaurant_id=restaurant.id) }}'">
             menu
           </button>
           <button
             class="btn btn-outline-secondary btn-sm"
-            onclick="window.location='{{ url_for('editRestaurant',
+            onclick="window.location='{{ url_for('restaurants.editRestaurant',
             restaurant_id=restaurant.id) }}'">
               edit
           </button>
           <button
             class="btn btn-outline-secondary btn-sm"
-            onclick="window.location='{{ url_for('deleteRestaurant',
+            onclick="window.location='{{ url_for('restaurants.deleteRestaurant',
             restaurant_id=restaurant.id)}}'">
               delete
           </button>
