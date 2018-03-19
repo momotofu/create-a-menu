@@ -29,13 +29,7 @@ from html_builder import HTML_Builder as HB
 import query_db
 
 
-# Assets
-IMAGE_FOLDER = './static/images'
-ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'gif'])
-
 app = Flask(__name__)
-app.config['IMAGE_FOLDER'] = IMAGE_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
