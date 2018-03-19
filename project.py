@@ -68,7 +68,6 @@ def createUser(login_session):
         raise
 
 
-
 # API endpoints
 @app.route('/restaurants/JSON')
 def getRestaurantsJSON():
@@ -563,7 +562,3 @@ def deleteMenuItem(restaurant_id, menu_id):
             return redirect(url_for('restaurantMenu',
                 restaurant_id=restaurant.id))
 
-if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
-    app.debug = True
-    app.run(host = '0.0.0.0', port=5000)

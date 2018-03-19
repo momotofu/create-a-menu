@@ -5,6 +5,7 @@ class Config(object):
 
     IMAGE_FOLDER = './static/images'
     ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'gif'])
+    SECRET_KEY = 'super_secret_key'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 
 class DevelopmentConfig(Config):

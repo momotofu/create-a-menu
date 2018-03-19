@@ -1,13 +1,13 @@
 from flask import Flask
+from app_index.config import Config as default_config
 
 
-def create_app():
-    app = config_app(Flask(__name__))
+def create_app(app_name, config=None):
+    app = configure_app(Flask(__name__), config)
     return app
 
 
 def configure_app(app, config_object=None):
-    from config import Config as default_config
 
     if config_object:
         app.config.from_object(config_object)
