@@ -1,4 +1,8 @@
 import os
+import sys
+
+# update system path
+sys.path.append(os.path.join(sys.path[0],'utils'))
 
 from flask import Flask, request, redirect, render_template
 from flask import url_for, flash, jsonify, send_from_directory
@@ -23,6 +27,7 @@ from sqlalchemy.exc import DBAPIError
 
 from html_builder import HTML_Builder as HB
 import query_db
+
 
 #OAuth
 CLIENT_ID = json.loads(open('./client_secrets.json',
