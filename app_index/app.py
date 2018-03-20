@@ -24,7 +24,6 @@ def configure_blueprints(app):
     from .api.api import api
 
     for blueprint in [restaurants, restaurant_menu, login]:
-        print('type: ', type(blueprint))
         app.register_blueprint(blueprint)
 
     return app
