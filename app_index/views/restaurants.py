@@ -1,16 +1,35 @@
 from flask import Blueprint, render_template
+from flask import session as login_session
 
-@app.route('/')
-@app.route('/restaurants')
+from app_index.utils import query_db
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+from app_index.model import Base, Restaurant
+
+engine = create_engine('sqlite:///restaurantmenu.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
+
+restaurants = Blueprint('restaurants',
+                        __name__,
+                        template_folder='templates')
+
+
+@restaurants.route('/')
+@restaurants.route('/restaurants')
 def allRestaurants():
     restaurants = query_db.get_all(session, Restaurant)
     if 'username' not in login_session:
-        return render_template('publicRestaurants.html',
+        return render_template('restaurants/publicRestaurants.html',
                 restaurants=restaurants)
-    return render_template('restaurants.html', restaurants=restaurants)
+    return render_template('restaurants/restaurants.html', restaurants=restaurants)
 
 
-@app.route('/restaurants/new/', methods=['GET', 'POST'])
+@restaurants.route('/restaurants/new/', methods=['GET', 'POST'])
 def newRestaurant():
     if 'username' not in login_session:
         return redirect(url_for('login'))
@@ -33,7 +52,7 @@ def newRestaurant():
                raise
 
 
-@app.route('/restaurants/<int:restaurant_id>/editRestaurant/', methods=['GET', 'POST'])
+@restaurants.route('/restaurants/<int:restaurant_id>/editRestaurant/', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
     if 'username' not in login_session:
         return redirect(url_for('login'))
@@ -59,7 +78,7 @@ def editRestaurant(restaurant_id):
             raise
 
 
-@app.route('/restaurants/<int:restaurant_id>/deleteRestaurant/', methods=['GET', 'POST'])
+@restaurants.route('/restaurants/<int:restaurant_id>/deleteRestaurant/', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
     if 'username' not in login_session:
         return redirect(url_for('login'))
