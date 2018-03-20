@@ -19,8 +19,11 @@ def configure_app(app, config_object=None):
 
 def configure_blueprints(app):
     from .views.restaurants import restaurants
+    from .views.restaurantmenu import restaurant_menu
+    from .views.login import login
 
-    for blueprint in [restaurants]:
+    for blueprint in [restaurants, restaurant_menu, login]:
+        print('type: ', type(blueprint))
         app.register_blueprint(blueprint)
 
     return app

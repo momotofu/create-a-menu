@@ -37,9 +37,10 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-def allowed_file(filename):
+def allowed_file(filename, app):
     return '.' in filename and \
-            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+            filename.rsplit('.', 1)[1].lower() in
+            app.config['ALLOWED_EXTENSIONS']
 
 
 def getUserInfo(user_id):
@@ -47,8 +48,8 @@ def getUserInfo(user_id):
     return user
 
 
-def getUserID(email):
-    try:
+def getUserID(email)
+    try
         user = session.query(User).filter_by(email = email).one()
         return user.id
     except:
