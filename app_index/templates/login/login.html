@@ -1,115 +1,55 @@
-{% extends "base.html" %}
-{% block head %}
-  {{ super() }}
-  {% block title %}
-    login
-  {% endblock %}
-  <script src="https://apis.google.com/js/client:platform.js?onload=start"
-          async defer></script>
-{% endblock %}
-{% block fb_code %}
-  <div id="fb-root"></div>
-  <script>
-    (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = 'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.12&appId=576457192702211&autoLogAppEvents=1';
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',
+    filename='styles.css') }}">
+    {% block head %}
+      <title>
+        {% block title %}Your restaurants{% endblock %}
+      </title>
+    {% endblock %}
+  </head>
+  <body class="bg-light">
+    {% block fb_code %}
+    {% endblock %}
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark
+      text-light justify-content-between">
+      {% block nav %}
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link mr-2" href={{ url_for('allRestaurants') }}>
+              <i class="fab fa-fort-awesome fa-lg"></i>
+            </a>
+          </li>
+        </ul>
+        {% if 'username' not in session %}
+        <a class="btn btn-outline-light" href={{ url_for('login') }}>
+          <strong>sign in</strong>
+        </a>
+        {% else %}
+          <a class="btn btn-outline-light" href={{ url_for('disconnect') }}>
+            <strong>logout</strong>
+          </a>
+        {% endif %}
 
-  function sendFBTokenToServer() {
-    var access_token = FB.getAuthResponse()['accessToken']
-    FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name)
-      $.ajax({
-        type: 'POST',
-        url: '/fbconnect?state={{state}}',
-        processData: false,
-        data: access_token,
-        contentType: 'application/octet-stream; charset=utf-8',
-        success: function(result) {
-          if (result) {
-            $('#result').html('Login Successful!</br>' + result + '</br> Redirecting...')
-            setTimeout(function() {
-              window.location.href = "/restaurants"
-            }, 4000)
-          } else {
-            $('#result').html('Failed to make a server-side call.')
-          }
-        }
-      })
-    })
-  }
-  </script>
-{% endblock %}
-{% block mainContent %}
-<div class="row justify-content-center">
-  <div class="col-lg-4">
-    <div class="card" id="signin-card">
-      <div class="card-body">
-        <h5 class="card-title text-center mb-4">Sign in</h5>
-        <div class="justify-content-center text-center">
-          <fb:login-button
-            scope="public_profile,email"
-            onlogin="sendFBTokenToServer();"
-            class="fb-login-button"
-            data-max-rows="1"
-            data-size="medium"
-            data-button-type="continue_with"
-            data-show-faces="false"
-            data-auto-logout-link="false"
-            data-use-continue-as="false">
-          </fb:login-button>
-          <div class="mb-3"></div>
-           <div
-             class="g-signin"
-             data-width="300"
-             data-height="200"
-             data-longtitle="true"
-             data-scope="openid email"
-             data-clientid="310679287808-9lgk4m41er20fdfhe49q23rjennhtta2.apps.googleusercontent.com"
-             data-redirecturi="postmessage"
-             data-accesstype="offline"
-             data-cookiepolicy="single_host_origin"
-             data-callback="signInCallback"
-             data-approvalprompt="force">
-           </div>
-         </div>
-      </div>
-     <div id="result"></div>
+      {% endblock %}
+    </nav>
+    {% block hero %}
+    {% endblock %}
+    <div class="container main-content">
+      {% block mainContent %}
+      {% endblock %}
     </div>
-  </div>
-</div>
-{% endblock %}
-{% block scripts %}
-  <script type="text/javascript">
-
-    function signInCallback(authResult) {
-      if (authResult['code']) {
-        $('signin-card').attr('style', 'display: none');
-        $.ajax({
-          type: 'POST',
-          url: '/gconnect?state={{ state }}',
-          processData: false,
-          contentType: 'application/octet-stream; charset=utf-8',
-          data: authResult['code'],
-          success: function(result) {
-            if (result) {
-              $('#result').html('Login Successful! </br>' + result +
-                '</br>Redirecting...')
-              setTimeout(function() {
-                window.location.href = "/restaurants"
-              }, 4000);
-            } else if (authResult['error']) {
-              console.log('There was an error: ' + authResult['error'])
-            }
-          }
-         })
-      } else {
-        $('#result').html('Failed to make a server-side cal. Check your configuration and console.')
-      }
-    }
-  </script>
-
-{% endblock %}
+    <footer class="container footer">
+      {% block footer %}
+      {% endblock %}
+    </footer>
+  </body>
+  <script src={{ url_for('static',
+                 filename='node_modules/jquery/dist/jquery.min.js') }}></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  {% block scripts %}
+  {% endblock %}
+</html>
