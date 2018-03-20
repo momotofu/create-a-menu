@@ -21,6 +21,7 @@ def configure_blueprints(app):
     from .views.restaurants import restaurants
     from .views.restaurantmenu import restaurant_menu
     from .views.login import login
+    from .api.api import api
 
     for blueprint in [restaurants, restaurant_menu, login]:
         print('type: ', type(blueprint))
