@@ -3,6 +3,10 @@ from app_index.config import Config as default_config
 
 
 def create_app(app_name, config=None):
+    """
+    Configure app object blueprints and global variables.
+    """
+
     app = configure_app(Flask(__name__), config)
     configure_blueprints(app)
     return app
