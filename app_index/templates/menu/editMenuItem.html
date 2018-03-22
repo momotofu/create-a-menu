@@ -27,7 +27,7 @@
         <h6 class="card-subtitle text-muted mb-4">for {{ restaurant.name }}</h6>
         <div class="input-group mb-3">
           <div class="col-12 mb-3"  id="image-container">
-            <img src={{ url_for('image_file', filename=item.image) }}
+            <img src={{ url_for('api.image_file', filename=item.image) }}
               class="img-fluid"
               style="border-radius: 4px"
               id="image-preview"
@@ -78,7 +78,8 @@
         </button>
       </form>
     </div>
-    <a class="btn btn-outline-secondary btn-lg btn-block" href={{ url_for('restaurantMenu',
+    <a class="btn btn-outline-secondary btn-lg btn-block" href={{
+       url_for('restaurant_menu.restaurantMenu',
       restaurant_id=restaurant.id) }}>
       CANCEL
     </a>

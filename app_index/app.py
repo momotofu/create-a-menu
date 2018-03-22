@@ -27,7 +27,7 @@ def configure_blueprints(app):
     from .views.login import login
     from .api.api import api
 
-    for blueprint in [restaurants, restaurant_menu, login]:
+    for blueprint in [restaurants, restaurant_menu, login, api]:
         app.register_blueprint(blueprint)
 
     return app

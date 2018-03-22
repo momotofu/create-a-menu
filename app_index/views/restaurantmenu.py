@@ -1,4 +1,21 @@
-from flask import Blueprint, render_template
+import os
+
+from flask import Blueprint, render_template, request, current_app as app
+from flask import session as login_session
+from werkzeug.utils import secure_filename
+
+from app_index.utils import query_db
+from app_index.utils.utils import allowed_file
+from app_index.model import Base, Restaurant, MenuItem
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine('sqlite:///restaurantmenu.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 restaurant_menu = Blueprint('restaurant_menu',
                             __name__,
@@ -9,9 +26,9 @@ def restaurantMenu(restaurant_id):
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id)
     if 'username' not in login_session:
-        return render_template('publicmenu.html', restaurant=restaurant,
+        return render_template('menu/publicmenu.html', restaurant=restaurant,
                 menuItems=items)
-    return render_template('menu.html', restaurant=restaurant, menuItems=items)
+    return render_template('menu/menu.html', restaurant=restaurant, menuItems=items)
 
 
 @restaurant_menu.route('/restaurants/<int:restaurant_id>/new-item/', methods=['GET', 'POST'])
@@ -21,7 +38,7 @@ def newMenuItem(restaurant_id):
 
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'GET':
-        return render_template('newMenuItem.html', restaurant=restaurant)
+        return render_template('menu/newMenuItem.html', restaurant=restaurant)
 
     if request.method == 'POST':
         params = request.form
@@ -31,9 +48,10 @@ def newMenuItem(restaurant_id):
             image = None
 
         try:
-            if image and allowed_file(image.filename):
+            if image and allowed_file(image.filename, app):
                 filename = secure_filename(image.filename)
-                image.save(os.path.join(restaurant_menu.config['IMAGE_FOLDER'], filename))
+                print('Image path: ', os.path, os.path.join(app.config['IMAGE_FOLDER']))
+                image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
             else:
                 filename = 'image-filler.jpg'
             item = MenuItem(
@@ -49,13 +67,13 @@ def newMenuItem(restaurant_id):
 
             flash("new menu item created!")
 
-            return redirect(url_for('restaurantMenu',
+            return redirect(url_for('restaurant_menu.restaurantMenu',
                 restaurant_id=restaurant.id))
 
         except:
             session.rollback()
             raise
-            return render_template('newMenuItemFailed.html',
+            return render_template('menu/newMenuItemFailed.html',
                     restaurant=restaurant)
 
 
@@ -75,7 +93,7 @@ def editMenuItem(restaurant_id, menu_id):
         return
 
     if request.method == 'GET':
-        return render_template('editMenuItem.html', restaurant=restaurant,
+        return render_template('menu/editMenuItem.html', restaurant=restaurant,
                 item=menuItem)
 
     if request.method == 'POST':
@@ -93,9 +111,9 @@ def editMenuItem(restaurant_id, menu_id):
                 menuItem.description = params['description']
             if menuItem.course != params['course']:
                 menuItem.course = params['course']
-            if image and allowed_file(image.filename):
+            if image and allowed_file(image.filename, app):
                 filename = secure_filename(image.filename)
-                image.save(os.path.join(restaurant_menu.config['IMAGE_FOLDER'], filename))
+                image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
                 menuItem.image = filename
 
             session.add(menuItem)
@@ -103,13 +121,13 @@ def editMenuItem(restaurant_id, menu_id):
 
             flash("Successfuly edited %s" % menuItem.name)
 
-            return redirect(url_for("restaurantMenu",
+            return redirect(url_for("restaurant_menu.restaurantMenu",
                 restaurant_id=restaurant.id))
         except:
             session.rollback()
             print('what 2')
             raise
-            return render_template('editMenuItemFailed.html',
+            return render_template('menu/editMenuItemFailed.html',
                     restaurant=restaurant, item=menuItem)
 
 @restaurant_menu.route('/restaurants/<int:restaurant_id>/<int:menu_id>/delete/',
@@ -122,7 +140,7 @@ def deleteMenuItem(restaurant_id, menu_id):
     restaurant = query_db.get_one(session, Restaurant, restaurant_id)
 
     if request.method == 'GET':
-        return render_template('confirmMenuItemDelete.html',
+        return render_template('menu/confirmMenuItemDelete.html',
                 restaurant=restaurant, item=menuItem)
     if request.method == 'POST':
         restaurant_path = '/'.join(request.path.split('/')[:3])
@@ -133,12 +151,12 @@ def deleteMenuItem(restaurant_id, menu_id):
 
                 flash("successfully deleted %s" % menuItem.name)
 
-                return redirect(url_for('restaurantMenu', restaurant_id=restaurant.id))
+                return redirect(url_for('restaurant_menu.restaurantMenu', restaurant_id=restaurant.id))
             except:
                 session.rollback()
                 raise
-                return render_template('deleteMenuItemFailed',
+                return render_template('menu/deleteMenuItemFailed',
                         restaurant=restaurant, item=menuItem)
         else:
-            return redirect(url_for('restaurantMenu',
+            return redirect(url_for('restaurant_menu.restaurantMenu',
                 restaurant_id=restaurant.id))
