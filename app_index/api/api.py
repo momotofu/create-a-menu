@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, send_from_directory
+from flask import current_app as app
 
 api = Blueprint('api', __name__)
 
@@ -7,7 +8,7 @@ api = Blueprint('api', __name__)
 @api.route('/images', defaults={'filename': 'filler.jpg'})
 @api.route('/images/<filename>')
 def image_file(filename):
-    return send_from_directory(api.config['IMAGE_FOLDER'], filename)
+    return send_from_directory('static/images', filename)
 
 
 @api.route('/restaurants/JSON')

@@ -1,7 +1,7 @@
 import os
 
 from flask import Blueprint, render_template, request, current_app as app
-from flask import session as login_session
+from flask import flash, redirect, url_for, session as login_session
 from werkzeug.utils import secure_filename
 
 from app_index.utils import query_db
@@ -50,7 +50,6 @@ def newMenuItem(restaurant_id):
         try:
             if image and allowed_file(image.filename, app):
                 filename = secure_filename(image.filename)
-                print('Image path: ', os.path, os.path.join(app.config['IMAGE_FOLDER']))
                 image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
             else:
                 filename = 'image-filler.jpg'
@@ -113,7 +112,8 @@ def editMenuItem(restaurant_id, menu_id):
                 menuItem.course = params['course']
             if image and allowed_file(image.filename, app):
                 filename = secure_filename(image.filename)
-                image.save(os.path.join(app.config['IMAGE_FOLDER'], filename))
+                path = os.path.join(app.config['IMAGE_FOLDER'], filename)
+                image.save(path)
                 menuItem.image = filename
 
             session.add(menuItem)

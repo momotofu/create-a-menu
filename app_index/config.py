@@ -3,7 +3,7 @@ class Config(object):
     TESTING = False
     DATABASE_URI = 'sqlite:///restaurantmenu.db'
 
-    IMAGE_FOLDER = './static/images'
+    IMAGE_FOLDER = 'app_index/static/images'
     ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'png', 'gif'])
     SECRET_KEY = 'super_secret_key'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
