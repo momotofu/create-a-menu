@@ -9,7 +9,7 @@
 <div class="row justify-content-center">
   <div class="col-lg-6">
     <div class="card card-form mb-4">
-      <form class="card-body card-body-form" action={{ url_for('newRestaurant') }} method="POST">
+      <form class="card-body card-body-form" action={{ url_for('restaurants.newRestaurant') }} method="POST">
         <h5 class="card-title">Create a new restaurant </h5>
         <div class="input-group mb-3">
           <input type="text" class="form-control" name="name">
@@ -24,7 +24,7 @@
       </form>
     </div>
     <a class="btn btn-outline-secondary btn-lg btn-block" href={{
-      url_for('allRestaurants') }}>
+      url_for('restaurants.allRestaurants') }}>
       CANCEL
     </a>
   </div>

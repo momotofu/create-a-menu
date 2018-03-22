@@ -25,7 +25,7 @@
           </li>
         </ul>
         {% if 'username' not in session %}
-        <a class="btn btn-outline-light" href={{ url_for('login') }}>
+        <a class="btn btn-outline-light" href={{ url_for('login.user_login') }}>
           <strong>sign in</strong>
         </a>
         {% else %}

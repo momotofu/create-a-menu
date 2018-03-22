@@ -25,7 +25,7 @@
 <section class="row">
   <div class="col-lg-5">
     <button type="button" class="btn btn-outline-primary btn-lg btn-block mb-4 mt-2"
-                          onclick="window.location='{{ url_for('newRestaurant') }}'">
+                          onclick="window.location='{{ url_for('restaurants.newRestaurant') }}'">
       create new restaurant
     </button>
   </div>
@@ -35,13 +35,13 @@
     <div class="list-group">
       {% for restaurant in restaurants %}
       <div class="list-group-item list-group-item-action"
-           onclick="window.location='{{ url_for('restaurantMenu',
+           onclick="window.location='{{ url_for('restaurant_menu.restaurantMenu',
            restaurant_id=restaurant.id) }}'">
         <span class="list-title">
           {{ restaurant.name }}
         </span>
         <button class="btn btn-outline-secondary btn-sm float-right"
-              onclick="window.location='{{ url_for('restaurantMenu',
+              onclick="window.location='{{ url_for('restaurant_menu.restaurantMenu',
         restaurant_id=restaurant.id) }}'">
           menu
         </button>
