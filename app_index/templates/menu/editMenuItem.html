@@ -8,7 +8,7 @@
 {% block nav %}
   {{ super() }}
   <li class="nav-item active">
-    <a class="nav-link" href={{ url_for('restaurantMenu',
+    <a class="nav-link" href={{ url_for('restaurant_menu.restaurantMenu',
       restaurant_id=restaurant.id) }}>
       {{ restaurant.name }}'s menu
     </a>
@@ -20,7 +20,7 @@
     <div class="card card-form mb-4">
       <form class="card-body card-body-form"
             enctype="multipart/form-data"
-            action={{ url_for('editMenuItem', restaurant_id=restaurant.id, menu_id=item.id) }} 
+            action={{ url_for('restaurant_menu.editMenuItem', restaurant_id=restaurant.id, menu_id=item.id) }}
             method="POST"
             id="form">
         <h5 class="card-title">Edit {{ item.name }} </h5>
