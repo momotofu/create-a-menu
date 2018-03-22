@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template
 from flask import session as login_session
+from flask import request
 
 from app_index.utils import query_db
 
@@ -35,7 +36,7 @@ def newRestaurant():
         return redirect(url_for('login'))
 
     if request.method == 'GET':
-        return render_template('newRestaurant.html')
+        return render_template('restaurants/newRestaurant.html')
     if request.method == 'POST':
         params = request.form
         if 'name' in params.keys():

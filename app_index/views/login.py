@@ -1,4 +1,8 @@
 from flask import Blueprint, render_template
+from flask import session as login_session
+from flask import make_response, json, flash, redirect, url_for
+
+import httplib2
 
 login = Blueprint('login',
                 __name__,
@@ -209,7 +213,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token for given \
+            user.'), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -232,10 +237,10 @@ def disconnect():
         del login_session['user_id']
         del login_session['provider']
         flash("You have successfully been logged out.")
-        return redirect(url_for('allRestaurants'))
+        return redirect(url_for('restaurants.allRestaurants'))
     else:
         flash("You were not logged in")
-        return redirect(url_for('allRestaurants'))
+        return redirect(url_for('restaurants.allRestaurants'))
 
 
 @login.route('/login')
