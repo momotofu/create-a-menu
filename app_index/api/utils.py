@@ -1,6 +1,12 @@
+import os
+import urllib.parse as url_parse
+from flask import request, json
+import requests
+
+credentials_path = os.path.abspath('app_index/credentials/config.json')
+
 def getGeocodeLocation(input_string):
-    google_api_key = json.loads(open('./credentials.json').read())['Google'
-    ' Maps API']['API Key']
+    google_api_key = json.loads(open(credentials_path).read())['api']['google_maps']['key']
     location_string = url_parse.quote(input_string)
 
     params = dict(
@@ -20,7 +26,7 @@ def getGeocodeLocation(input_string):
         latitude=latitude
     )
 
-    return jsonify(ll)
+    return ll
 
 
 def findRestaurant(address="Osaka", query="ramen", limit=1):
@@ -37,10 +43,9 @@ def findRestaurant(address="Osaka", query="ramen", limit=1):
 
     limit = int(limit)
     try:
-        ll_data = json.loads(getGeocodeLocation(address).data.decode())
+        ll_data = getGeocodeLocation(address)
         ll = '%s, %s' % (ll_data['latitude'], ll_data['longitude'])
-        response = json.loads(getFourSquare(query, ll,
-            limit).data.decode().encode('utf-8'))
+        response = getFourSquare(query, ll, limit)
         print(response)
     except:
         raise
@@ -70,9 +75,10 @@ def getFourSquare(query='pizza', ll='Osaka', limit=1):
     if 'limit' in request.args:
         limit = request.args.get('limit')
 
-    credentials = json.loads(open('./credentials.json', 'r').read())['Four Square API']
-    client_ID = credentials['Client ID']
-    client_secret = credentials['Client Secret']
+    credentials = json.loads(open(credentials_path,
+    'r').read())['api']['four_square']
+    client_ID = credentials['client_id']
+    client_secret = credentials['client_secret']
 
     params = dict(
         client_id=client_ID,
@@ -85,4 +91,4 @@ def getFourSquare(query='pizza', ll='Osaka', limit=1):
 
     resp = requests.get(url=url, params=params)
     data = json.loads(resp.text)
-    return jsonify(data)
+    return data

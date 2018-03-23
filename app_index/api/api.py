@@ -61,6 +61,27 @@ def restaurantsJSON():
             session.rollback()
             return make_response('error', 404)
 
+@api.route('/newRestaurant/JSON', methods=['POST'])
+def newRestaurant():
+    print('hit')
+    address = request.args.get('address', '')
+    meal_type = request.args.get('meal_type', '')
+    print('address: ', address, 'meal_type: ', meal_type)
+    restaurant_info = utils.findRestaurant(address, meal_type)
+
+    if restaurant_info != "No results found":
+        restaurant = Restaurnt(name=restaurant_info['name'])
+        try:
+            query_db.update(session, restaurant)
+            session.commit()
+        except:
+            session.rollback()
+            raise
+            return make_response('Error: ', 404)
+    else:
+        return make_response('No restaurants found for %s in %s' % (meal_type,
+            location), 404)
+
 
 @api.route('/restaurants/<int:restaurant_id>/JSON')
 def restaurantJSON(restaurant_id):
