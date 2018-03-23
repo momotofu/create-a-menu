@@ -59,10 +59,15 @@ def newMenuItem(restaurant_id):
                     course=params['course'],
                     description=params['description'],
                     image=filename,
+                    restaurant_id=restaurant.id,
                     user_id=login_session['user_id']
                     )
-            session.add(item)
-            session.commit()
+            try:
+                session.add(item)
+                session.commit()
+            except:
+                session.rollback()
+                raise
 
             flash("new menu item created!")
 
