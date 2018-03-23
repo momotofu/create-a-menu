@@ -13,8 +13,9 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column('id', Integer, primary_key=True)
-    name = Column('name', String(80), nullable=False)
-    picture = Column('picture', String(80), nullable=False)
+    name = Column('name', String(80))
+    username = Column('username', String(80))
+    picture = Column('picture', String(80))
     email = Column('email', String(80))
     password_hash = Column(String(64))
 

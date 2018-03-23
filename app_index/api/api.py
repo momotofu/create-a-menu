@@ -3,7 +3,7 @@ from flask import make_response, json, request, current_app as app
 from flask import redirect
 
 from app_index.utils import query_db
-from app_index.model import Base, Restaurant, MenuItem
+from app_index.model import Base, Restaurant, MenuItem, User
 from app_index.api import utils
 
 from sqlalchemy import create_engine
@@ -23,6 +23,31 @@ api = Blueprint('api', __name__)
 @api.route('/images/<filename>')
 def image_file(filename):
     return send_from_directory('static/images', filename)
+
+
+@api.route('/users', methods=['GET', 'POST'])
+def users():
+    if request.method == 'POST':
+        username = request.json.get('username')
+        password = request.json.get('password')
+
+        if username is None or password is None:
+            abort(400)
+        if session.query(User).filter_by(username=username).first() is not None:
+            abort(400)
+
+        user = User(username=username)
+        user.hash_password(password)
+
+        try:
+            session.add(user)
+            session.commit()
+
+            return jsonify({"username": user.username}), 201
+        except:
+            session.rollback()
+            raise
+
 
 
 @api.route('/restaurants/JSON', methods=['GET', 'POST', 'DELETE'])
