@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, send_from_directory, jsonify
 from flask import current_app as app
 
 from app_index.utils import query_db
-from app_index.model import Base, Restaurant
+from app_index.model import Base, Restaurant, MenuItem
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
