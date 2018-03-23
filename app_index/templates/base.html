@@ -23,6 +23,8 @@
               <i class="fab fa-fort-awesome fa-lg"></i>
             </a>
           </li>
+          {% block navLinks %}
+          {% endblock %}
         </ul>
         {% if 'username' not in session %}
         <a class="btn btn-outline-light" href={{ url_for('login.user_login') }}>

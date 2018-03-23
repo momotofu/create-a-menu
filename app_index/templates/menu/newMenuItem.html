@@ -5,10 +5,9 @@
     Create new item for {{ restaurant.name }}
   {% endblock %}
 {% endblock %}
-{% block nav %}
-  {{ super() }}
+{% block navLinks %}
   <li class="nav-item active">
-    <a class="nav-link" href={{ url_for('restaurantMenu',
+    <a class="nav-link" href={{ url_for('restaurant_menu.restaurantMenu',
       restaurant_id=restaurant.id) }}>
       {{ restaurant.name }}'s menu
     </a>
@@ -18,7 +17,8 @@
 <div class="row justify-content-center">
   <div class="col-lg-6">
     <div class="card mb-4">
-      <form class="card-body card-body-form" action={{ url_for('newMenuItem',
+      <form class="card-body card-body-form" action={{
+            url_for('restaurant_menu.newMenuItem',
         restaurant_id=restaurant.id) }} enctype=multipart/form-data method="POST">
         <h5 class="card-title">Create a new menu item </h5>
         <h6 class="card-subtitle text-muted mb-4">for {{ restaurant.name }}</h6>
@@ -68,7 +68,8 @@
         <input class="btn btn-primary btn-lg btn-block" type="submit" value="CREATE">
       </form>
     </div>
-    <a class="btn btn-outline-secondary btn-lg btn-block" href={{ url_for('restaurantMenu',
+    <a class="btn btn-outline-secondary btn-lg btn-block" href={{
+       url_for('restaurant_menu.restaurantMenu',
       restaurant_id=restaurant.id) }}>
       CANCEL
     </a>

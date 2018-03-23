@@ -34,7 +34,7 @@ def restaurantMenu(restaurant_id):
 @restaurant_menu.route('/restaurants/<int:restaurant_id>/new-item/', methods=['GET', 'POST'])
 def newMenuItem(restaurant_id):
     if 'username' not in login_session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.user_login'))
 
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
     if request.method == 'GET':
@@ -82,7 +82,7 @@ def newMenuItem(restaurant_id):
     )
 def editMenuItem(restaurant_id, menu_id):
     if 'username' not in login_session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.user_login'))
 
     try:
         restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
@@ -134,7 +134,7 @@ def editMenuItem(restaurant_id, menu_id):
     methods=['GET', 'POST'])
 def deleteMenuItem(restaurant_id, menu_id):
     if 'username' not in login_session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.user_login'))
 
     menuItem = query_db.get_one(session, MenuItem, menu_id)
     restaurant = query_db.get_one(session, Restaurant, restaurant_id)
