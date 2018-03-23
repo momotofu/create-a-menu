@@ -70,7 +70,7 @@ def newRestaurant():
     restaurant_info = utils.findRestaurant(address, meal_type)
 
     if restaurant_info != "No results found":
-        restaurant = Restaurnt(name=restaurant_info['name'])
+        restaurant = Restaurant(name=restaurant_info['name'])
         try:
             query_db.update(session, restaurant)
             session.commit()
