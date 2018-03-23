@@ -61,7 +61,7 @@ def editRestaurant(restaurant_id):
     restaurant = query_db.get_one(session, Restaurant, restaurant_id)
 
     if request.method == 'GET':
-        return render_template('editRestaurant.html', restaurant=restaurant)
+        return render_template('restaurants/editRestaurant.html', restaurant=restaurant)
     if request.method == 'POST':
         params = request.form
         if 'name' in params.keys():
