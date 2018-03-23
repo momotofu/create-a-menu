@@ -59,7 +59,7 @@ def newMenuItem(restaurant_id):
                     course=params['course'],
                     description=params['description'],
                     image=filename,
-                    user_id=login_session['user-id']
+                    user_id=login_session['user_id']
                     )
             session.add(item)
             session.commit()
