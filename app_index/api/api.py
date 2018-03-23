@@ -25,16 +25,21 @@ def image_file(filename):
 
 @api.route('/restaurants/JSON', methods=['GET', 'POST'])
 def getRestaurantsJSON():
+    restaurants = query_db.get_all(session, Restaurant)
+
     if request.method == 'GET':
         try:
-            restaurants = query_db.get_all(session, Restaurant)
             return jsonify(Restaurants=[restaurant.serialize for restaurant in
                 restaurants])
         except:
             raise
     elif request.method == 'POST':
-        restaurant = Restaurant(name=request.args.get('name'))
+        restaurant = Restaurant(name=request.form['name'])
 
+        if 'user_id' in request.form:
+            restaurant.user_id = request.args.get('user_id')
+        else:
+            restaurant.user_id = 1
         try:
             query_db.update(session, restaurant)
             session.commit()
