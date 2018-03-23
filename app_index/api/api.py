@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, send_from_directory, jsonify
-from flask import request, current_app as app
+from flask import make_response, request, current_app as app
 
 from app_index.utils import query_db
 from app_index.model import Base, Restaurant, MenuItem
@@ -23,7 +23,7 @@ def image_file(filename):
     return send_from_directory('static/images', filename)
 
 
-@api.route('/restaurants/JSON', methods=['GET', 'POST'])
+@api.route('/restaurants/JSON', methods=['GET', 'POST', 'DELETE'])
 def getRestaurantsJSON():
     restaurants = query_db.get_all(session, Restaurant)
 
@@ -48,6 +48,17 @@ def getRestaurantsJSON():
         except:
             session.rollback()
             raise
+    elif request.method == 'DELETE':
+        try:
+            restaurant = query_db.get_one(session, Restaurant,
+                    request.form['id'])
+            query_db.delete(session, restaurant)
+            session.commit()
+
+            return make_response('succes', 200)
+        except:
+            session.rollback()
+            return make_response('error', 404)
 
 
 @api.route('/restaurants/<int:restaurant_id>/JSON')
