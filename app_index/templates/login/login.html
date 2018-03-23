@@ -19,17 +19,17 @@
       {% block nav %}
         <ul class="navbar-nav">
           <li class="nav-item active">
-            <a class="nav-link mr-2" href={{ url_for('allRestaurants') }}>
+            <a class="nav-link mr-2" href={{ url_for('restaurants.allRestaurants') }}>
               <i class="fab fa-fort-awesome fa-lg"></i>
             </a>
           </li>
         </ul>
         {% if 'username' not in session %}
-        <a class="btn btn-outline-light" href={{ url_for('login') }}>
+        <a class="btn btn-outline-light" href={{ url_for('login.user_login') }}>
           <strong>sign in</strong>
         </a>
         {% else %}
-          <a class="btn btn-outline-light" href={{ url_for('disconnect') }}>
+          <a class="btn btn-outline-light" href={{ url_for('login.disconnect') }}>
             <strong>logout</strong>
           </a>
         {% endif %}

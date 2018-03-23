@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask import session as login_session
-from flask import request
+from flask import request, redirect, url_for
 
 from app_index.utils import query_db
 
@@ -33,7 +33,7 @@ def allRestaurants():
 @restaurants.route('/restaurants/new/', methods=['GET', 'POST'])
 def newRestaurant():
     if 'username' not in login_session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.user_login'))
 
     if request.method == 'GET':
         return render_template('restaurants/newRestaurant.html')
@@ -48,7 +48,7 @@ def newRestaurant():
 
                 flash('Sucessfully created %s!' % restaurant.name)
 
-                return redirect(url_for('allRestaurants'))
+                return redirect(url_for('restaurants.allRestaurants'))
            except:
                raise
 
@@ -56,7 +56,7 @@ def newRestaurant():
 @restaurants.route('/restaurants/<int:restaurant_id>/editRestaurant/', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
     if 'username' not in login_session:
-        return redirect(url_for('login'))
+        return redirect(url_for('api.login'))
 
     restaurant = query_db.get_one(session, Restaurant, restaurant_id)
 
@@ -72,17 +72,17 @@ def editRestaurant(restaurant_id):
 
             flash("Successfully updated %s!" % restaurant.name)
 
-            return redirect(url_for('allRestaurants'))
+            return redirect(url_for('restaurants.allRestaurants'))
         except:
             session.rollback()
-            redirect(url_for('allRestaurants'))
+            redirect(url_for('restaurants.allRestaurants'))
             raise
 
 
 @restaurants.route('/restaurants/<int:restaurant_id>/deleteRestaurant/', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
     if 'username' not in login_session:
-        return redirect(url_for('login'))
+        return redirect(url_for('login.user_login'))
 
     try:
         restaurant = query_db.get_one(session, Restaurant, restaurant_id)
@@ -103,7 +103,7 @@ def deleteRestaurant(restaurant_id):
 
                     flash("Successfuly deleted %s" % restaurant.name)
 
-                    return redirect(url_for('allRestaurants'))
+                    return redirect(url_for('restaurants.allRestaurants'))
                 except:
                     session.rollback()
                     raise

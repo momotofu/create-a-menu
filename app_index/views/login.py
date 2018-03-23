@@ -3,6 +3,7 @@ from flask import session as login_session
 from flask import make_response, json, flash, redirect, url_for
 
 import httplib2
+import random, string
 
 login = Blueprint('login',
                 __name__,
