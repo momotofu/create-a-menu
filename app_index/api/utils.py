@@ -48,6 +48,8 @@ def findRestaurant(address="Osaka", query="ramen", limit=1):
         ll_data = getGeocodeLocation(address)
         ll = '%s, %s' % (ll_data['latitude'], ll_data['longitude'])
         response = getFourSquare(query, ll, limit)
+        if len(response['response']['groups'][0]['items']) == 0:
+            return "No results found"
     except:
         raise
     results = {}
