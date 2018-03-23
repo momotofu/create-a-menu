@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask import session as login_session
-from flask import make_response, json, flash, redirect, url_for
+from flask import make_response, json, flash, redirect, url_for, request
 
 import httplib2
 import random, string
@@ -253,4 +253,4 @@ def user_login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x
             in range(32))
     login_session['state'] = state
-    return render_template('login.html', state=state)
+    return render_template('login/login.html', state=state)
