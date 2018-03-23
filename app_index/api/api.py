@@ -3,6 +3,7 @@ from flask import make_response, request, current_app as app
 
 from app_index.utils import query_db
 from app_index.model import Base, Restaurant, MenuItem
+from app_index.api import utils
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -24,7 +25,7 @@ def image_file(filename):
 
 
 @api.route('/restaurants/JSON', methods=['GET', 'POST', 'DELETE'])
-def getRestaurantsJSON():
+def restaurantsJSON():
     restaurants = query_db.get_all(session, Restaurant)
 
     if request.method == 'GET':
@@ -62,7 +63,7 @@ def getRestaurantsJSON():
 
 
 @api.route('/restaurants/<int:restaurant_id>/JSON')
-def getRestaurantJSON(restaurant_id):
+def restaurantJSON(restaurant_id):
     try:
         restaurant = query_db.get_one(session, Restaurant, restaurant_id)
         return jsonify(restaurant.serialize)
@@ -71,7 +72,7 @@ def getRestaurantJSON(restaurant_id):
 
 
 @api.route('/restaurants/<int:restaurant_id>/menu/JSON')
-def getRestaurantMenuJSON(restaurant_id):
+def restaurantMenuJSON(restaurant_id):
     try:
         restaurant = query_db.get_one(session, Restaurant, restaurant_id)
         items = query_db.get_items(session, MenuItem, restaurant_id)
@@ -81,7 +82,7 @@ def getRestaurantMenuJSON(restaurant_id):
 
 
 @api.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/JSON')
-def getRestaurantMenuItemJSON(restaurant_id, menu_id):
+def restaurantMenuItemJSON(restaurant_id, menu_id):
     try:
         item = query_db.get_one(session, MenuItem, restaurant_id)
         return jsonify(item.serialize)
