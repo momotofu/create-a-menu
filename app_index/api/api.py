@@ -1,5 +1,17 @@
-from flask import Blueprint, render_template, send_from_directory
+from flask import Blueprint, render_template, send_from_directory, jsonify
 from flask import current_app as app
+
+from app_index.utils import query_db
+from app_index.model import Base, Restaurant
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+engine = create_engine('sqlite:///restaurantmenu.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 api = Blueprint('api', __name__)
 
