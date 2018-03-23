@@ -1,9 +1,28 @@
+import os
+
 from flask import Blueprint, render_template
 from flask import session as login_session
 from flask import make_response, json, flash, redirect, url_for, request
 
-import httplib2
+import httplib2, requests
 import random, string
+
+from app_index.model import User
+from app_index.utils.html_builder import HTML_Builder as HB
+from app_index.model import Base, Restaurant
+
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+
+engine = create_engine('sqlite:///restaurantmenu.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 login = Blueprint('login',
                 __name__,
@@ -43,10 +62,10 @@ def fbconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     short_lived_token = request.data.decode()
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
-        'web']['app_id']
-    app_secret = json.loads(
-        open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    credentials_path = os.path.abspath('app_index/credentials/config.json')
+    credentials = json.loads(open(credentials_path, 'r').read())['oauth']['facebook']
+    app_id = credentials['app_id']
+    app_secret = credentials['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, short_lived_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1].decode()
@@ -110,12 +129,14 @@ def gconnect():
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
+
+    credentials_path = os.path.abspath('app_index/credentials/google_client_secrets.json')
     # Obtain authorization code
     code = request.data
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('./credentials/google_client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets(credentials_path, scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -145,7 +166,7 @@ def gconnect():
         return response
 
     # Verify that the access token is valid for this app.
-    client_id = json.loads(open('./credentials/config.json','r').read())['oauth']['google']['client_id']
+    client_id = json.loads(open(credentials_path,'r').read())['web']['client_id']
 
     if result['issued_to'] != client_id:
         response = make_response(

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask import session as login_session
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, flash
 
 from app_index.utils import query_db
 
@@ -41,7 +41,7 @@ def newRestaurant():
         params = request.form
         if 'name' in params.keys():
            restaurant = Restaurant(name=params['name'],
-                                   user_id=login_session['user-id'])
+                                   user_id=login_session['user_id'])
            try:
                 query_db.update(session, restaurant)
                 session.commit()
