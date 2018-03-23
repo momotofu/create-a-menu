@@ -90,7 +90,7 @@ def deleteRestaurant(restaurant_id):
         raise
 
     if request.method == 'GET':
-        return render_template('confirmRestaurantDelete.html',
+        return render_template('restaurants/confirmRestaurantDelete.html',
                 restaurant=restaurant)
     if request.method == 'POST':
         params = request.form
