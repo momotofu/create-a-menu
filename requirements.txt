@@ -4,4 +4,4 @@ json
 oauth2client
 requests
 sqlalchemy
-
+flask_httpauth

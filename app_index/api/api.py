@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, send_from_directory, jsonify
 from flask import make_response, json, request, current_app as app
 from flask import redirect
+from flask_httpauth import HTTPBasicAuth
 
 from app_index.utils import query_db
 from app_index.model import Base, Restaurant, MenuItem, User
