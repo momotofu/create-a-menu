@@ -1,9 +1,11 @@
 import os
-import urllib.parse as url_parse
-from flask import request, json
 import requests
 
+import urllib.parse as url_parse
+from flask import request, json
+
 credentials_path = os.path.abspath('app_index/credentials/config.json')
+
 
 def getGeocodeLocation(input_string):
     google_api_key = json.loads(open(credentials_path).read())['api']['google_maps']['key']
@@ -46,14 +48,14 @@ def findRestaurant(address="Osaka", query="ramen", limit=1):
         ll_data = getGeocodeLocation(address)
         ll = '%s, %s' % (ll_data['latitude'], ll_data['longitude'])
         response = getFourSquare(query, ll, limit)
-        print(response)
     except:
         raise
     results = {}
     base = response['response']['groups'][0]['items']
     for i in range(limit):
         nbase = base[i]['venue']
-        results[nbase['name']] = dict(
+        results[i] = dict(
+            name = nbase['name'],
             address = nbase['location']['address'],
             picture = 'none' if nbase['photos']['count'] == 0 else
                 nbase['photos']['groups'][0],
@@ -61,8 +63,7 @@ def findRestaurant(address="Osaka", query="ramen", limit=1):
             rating = 'none' if not 'rating' in nbase.keys() else
             nbase['rating']
         )
-
-    return json.dumps(results, ensure_ascii=False, indent=4, sort_keys=True)
+    return results
 
 
 def getFourSquare(query='pizza', ll='Osaka', limit=1):

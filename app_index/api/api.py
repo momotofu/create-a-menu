@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, send_from_directory, jsonify
-from flask import make_response, request, current_app as app
+from flask import make_response, json, request, current_app as app
+from flask import redirect
 
 from app_index.utils import query_db
 from app_index.model import Base, Restaurant, MenuItem
@@ -30,12 +31,12 @@ def restaurantsJSON():
 
     if request.method == 'GET':
         try:
-            return jsonify(Restaurants=[restaurant.serialize for restaurant in
-                restaurants])
+            return json.dumps([restaurant.serialize for restaurant in
+                restaurants], ensure_ascii=False)
         except:
             raise
     elif request.method == 'POST':
-        restaurant = Restaurant(name=request.form['name'])
+        restaurant = Restaurant(name=request.args.get('name'))
 
         if 'user_id' in request.form:
             restaurant.user_id = request.args.get('user_id')
@@ -44,15 +45,15 @@ def restaurantsJSON():
         try:
             query_db.update(session, restaurant)
             session.commit()
-            return jsonify(Restaurants=[restaurant.serialize for restaurant in
-                restaurants])
+            return json.dumps([restaurant.serialize for restaurant in
+                restaurants], ensure_ascii=False)
         except:
             session.rollback()
             raise
     elif request.method == 'DELETE':
         try:
             restaurant = query_db.get_one(session, Restaurant,
-                    request.form['id'])
+                    request.args.get('id'))
             query_db.delete(session, restaurant)
             session.commit()
 
@@ -63,17 +64,18 @@ def restaurantsJSON():
 
 @api.route('/newRestaurant/JSON', methods=['POST'])
 def newRestaurant():
-    print('hit')
     address = request.args.get('address', '')
     meal_type = request.args.get('meal_type', '')
-    print('address: ', address, 'meal_type: ', meal_type)
-    restaurant_info = utils.findRestaurant(address, meal_type)
+    restaurant_info = utils.findRestaurant(address, meal_type)[0]
 
     if restaurant_info != "No results found":
         restaurant = Restaurant(name=restaurant_info['name'])
         try:
             query_db.update(session, restaurant)
             session.commit()
+            restaurants = query_db.get_all(session, Restaurant)
+            return json.dumps([restaurant.serialize for restaurant in
+                restaurants], ensure_ascii=False)
         except:
             session.rollback()
             raise
