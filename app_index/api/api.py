@@ -27,7 +27,10 @@ def image_file(filename):
 
 @api.route('/users', methods=['GET', 'POST'])
 def users():
-    if request.method == 'POST':
+    if request.method == 'GET':
+        users = query_db.get_all(session, User)
+        return jsonify(users=[user.serialize for user in users])
+    elif request.method == 'POST':
         username = request.json.get('username')
         password = request.json.get('password')
 
