@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, send_from_directory, jsonify
 from flask import make_response, json, request, current_app as app
-from flask import redirect
+from flask import redirect, g
 from flask_httpauth import HTTPBasicAuth
 
 from app_index.utils import query_db
@@ -17,6 +17,16 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 api = Blueprint('api', __name__)
+
+auth = HTTPBasicAuth()
+
+@auth.verify_password
+def verify_password(username, password):
+    user = session.query(User).filter_by(username=username).first()
+    if not user or not user.verify_password(password):
+        return False
+    g.user = user
+    return True
 
 
 # API endpoints
@@ -40,7 +50,12 @@ def users():
         if session.query(User).filter_by(username=username).first() is not None:
             abort(400)
 
-        user = User(username=username)
+        user = User(
+            username=username,
+            name=request.json.get('name', None),
+            email=request.json.get('email', None),
+            picture=request.json.get('picture', None)
+            )
         user.hash_password(password)
 
         try:
@@ -52,6 +67,11 @@ def users():
             session.rollback()
             raise
 
+
+@api.route('/protected')
+@auth.login_required
+def protectedAsset():
+    return jsonify({"secret key":"love"})
 
 
 @api.route('/restaurants/JSON', methods=['GET', 'POST', 'DELETE'])
