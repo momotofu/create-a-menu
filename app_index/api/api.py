@@ -38,6 +38,11 @@ def image_file(filename):
 
 @api.route('/users', methods=['GET', 'POST'])
 def users():
+    """
+    Create or delete users. Takes a json object with values
+    email, name, username, picture, and password when creating
+    a new user over a POST request.
+    """
     if request.method == 'GET':
         users = query_db.get_all(session, User)
         return jsonify(users=[user.serialize for user in users])
