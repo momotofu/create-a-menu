@@ -33,6 +33,18 @@ class User(Base):
         s = Serializer(secret_key, expires_in=expiration)
         return s.dumps({'id': self.id})
 
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(secret_key)
+        try:
+            dat = s.loads(token)
+        except SignatureExpired:
+            return None
+        except BadSignature:
+            return None
+        user_id = data['id']
+        return user_id
+
     @property
     def serialize(self):
         return {
