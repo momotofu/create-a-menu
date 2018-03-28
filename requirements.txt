@@ -5,3 +5,5 @@ oauth2client
 requests
 sqlalchemy
 flask_httpauth
+passlib
+itsdangerous

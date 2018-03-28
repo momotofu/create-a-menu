@@ -10,6 +10,7 @@ import random, string
 from app_index.model import User
 from app_index.utils.html_builder import HTML_Builder as HB
 from app_index.model import Base, Restaurant
+import app_index.utils.utils as utils
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -271,7 +272,6 @@ def user_login():
     Create a state token to prevent request forgery
     and store it in the session for later validation
     """
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x
-            in range(32))
+    state = utils.get_rand_string()
     login_session['state'] = state
     return render_template('login/login.html', state=state)
