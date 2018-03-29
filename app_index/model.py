@@ -37,7 +37,7 @@ class User(Base):
     def verify_auth_token(token):
         s = Serializer(secret_key)
         try:
-            dat = s.loads(token)
+            data = s.loads(token)
         except SignatureExpired:
             return None
         except BadSignature:
