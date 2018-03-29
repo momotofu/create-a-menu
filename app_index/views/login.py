@@ -18,7 +18,6 @@ from oauth2client.client import FlowExchangeError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
 
